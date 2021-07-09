@@ -10229,6 +10229,7 @@ export interface LangNavigationPopupOptions {
     parallelChannel?: string;
     period?: string;
     periodATR?: string;
+    periods?: string;
     periodSenkouSpanB?: string;
     periodTenkan?: string;
     pitchfork?: string;
@@ -16810,6 +16811,17 @@ export interface PlotAbandsOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -17635,6 +17647,17 @@ export interface PlotAdOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -18458,6 +18481,17 @@ export interface PlotAoOptions {
     pointDescriptionFormatter?: Function;
     pointPadding?: number;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -19257,6 +19291,17 @@ export interface PlotApoOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -20177,6 +20222,9 @@ export interface PlotAreaOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -20233,8 +20281,23 @@ export interface PlotAreaOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -20929,6 +20992,9 @@ export interface PlotArearangeOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -20985,8 +21051,23 @@ export interface PlotArearangeOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -21885,6 +21966,9 @@ export interface PlotAreasplineOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -21941,8 +22025,23 @@ export interface PlotAreasplineOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -22613,6 +22712,9 @@ export interface PlotAreasplinerangeOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -22669,8 +22771,23 @@ export interface PlotAreasplinerangeOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -23492,6 +23609,17 @@ export interface PlotAroonOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -24273,6 +24401,17 @@ export interface PlotAroonoscillatorOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -25091,6 +25230,17 @@ export interface PlotAtrOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -25979,6 +26129,9 @@ export interface PlotBarOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -26044,6 +26197,10 @@ export interface PlotBarOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -26054,6 +26211,17 @@ export interface PlotBarOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -26888,6 +27056,17 @@ export interface PlotBbOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -27832,8 +28011,23 @@ export interface PlotBellcurveOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -28715,6 +28909,9 @@ export interface PlotBoxplotOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -28780,6 +28977,10 @@ export interface PlotBoxplotOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -28790,6 +28991,17 @@ export interface PlotBoxplotOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -29753,6 +29965,9 @@ export interface PlotBubbleOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -29783,8 +29998,23 @@ export interface PlotBubbleOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -30627,6 +30857,9 @@ export interface PlotBulletOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -30692,6 +30925,10 @@ export interface PlotBulletOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -30702,6 +30939,17 @@ export interface PlotBulletOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -31618,6 +31866,9 @@ export interface PlotCandlestickOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -31683,6 +31934,10 @@ export interface PlotCandlestickOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -31699,6 +31954,17 @@ export interface PlotCandlestickOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -32505,6 +32771,17 @@ export interface PlotCciOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -33314,6 +33591,17 @@ export interface PlotChaikinOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -34121,6 +34409,17 @@ export interface PlotCmfOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -34933,6 +35232,17 @@ export interface PlotCmoOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -35828,6 +36138,9 @@ export interface PlotColumnOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -35893,6 +36206,10 @@ export interface PlotColumnOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -35903,6 +36220,17 @@ export interface PlotColumnOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -36737,6 +37065,9 @@ export interface PlotColumnpyramidOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -36802,6 +37133,10 @@ export interface PlotColumnpyramidOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -36812,6 +37147,17 @@ export interface PlotColumnpyramidOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -37429,6 +37775,9 @@ export interface PlotColumnrangeOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -37494,6 +37843,10 @@ export interface PlotColumnrangeOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -37504,6 +37857,17 @@ export interface PlotColumnrangeOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -38296,6 +38660,9 @@ export interface PlotCylinderOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -38361,6 +38728,10 @@ export interface PlotCylinderOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -38371,6 +38742,17 @@ export interface PlotCylinderOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -39165,6 +39547,17 @@ export interface PlotDemaOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -39747,6 +40140,17 @@ export interface PlotDependencywheelOptions {
      * an individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -40510,6 +40914,17 @@ export interface PlotDisparityindexOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -41361,6 +41776,17 @@ export interface PlotDmiOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -42177,6 +42603,17 @@ export interface PlotDpoOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -42830,6 +43267,9 @@ export interface PlotDumbbellOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -42887,8 +43327,23 @@ export interface PlotDumbbellOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -43682,6 +44137,17 @@ export interface PlotEmaOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -44558,6 +45024,9 @@ export interface PlotErrorbarOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -44623,6 +45092,10 @@ export interface PlotErrorbarOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -44633,6 +45106,17 @@ export interface PlotErrorbarOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -45507,6 +45991,9 @@ export interface PlotFlagsOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -45567,8 +46054,23 @@ export interface PlotFlagsOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -46444,6 +46946,9 @@ export interface PlotFunnel3dOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -46509,6 +47014,10 @@ export interface PlotFunnel3dOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -46519,6 +47028,17 @@ export interface PlotFunnel3dOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) A reversed funnel has the widest area down. A reversed
      * funnel with no neck width and neck height is a pyramid.
@@ -47056,6 +47576,17 @@ export interface PlotFunnelOptions {
      * option can be used to override the automatic value.
      */
     pointRange?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) A reversed funnel has the widest area down. A reversed
      * funnel with no neck width and neck height is a pyramid.
@@ -47812,6 +48343,17 @@ export interface PlotGanttOptions {
      */
     pointWidth?: number;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Gantt) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -48558,6 +49100,9 @@ export interface PlotGaugeOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -48588,8 +49133,23 @@ export interface PlotGaugeOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -49343,6 +49903,17 @@ export interface PlotHeatmapOptions {
      * (Highcharts, Highmaps) Padding between the points in the heatmap.
      */
     pointPadding?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highmaps) The row size - how many Y axis units each heatmap
      * row should span.
@@ -50218,6 +50789,10 @@ export interface PlotHistogramOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -50228,6 +50803,17 @@ export interface PlotHistogramOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -51049,6 +51635,17 @@ export interface PlotIkhOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -51679,6 +52276,17 @@ export interface PlotItemOptions {
      * option can be used to override the automatic value.
      */
     pointRange?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) The number of rows to display in the rectangular or circular
      * view. If the `innerSize` is set, it will be overridden by the `rows`
@@ -52459,6 +53067,17 @@ export interface PlotKeltnerchannelsOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -53305,6 +53924,17 @@ export interface PlotKlingerOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -54163,6 +54793,17 @@ export interface PlotLinearregressionangleOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -55288,6 +55929,17 @@ export interface PlotLinearregressioninterceptOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -55831,6 +56483,17 @@ export interface PlotLinearregressionOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -56665,6 +57328,17 @@ export interface PlotLinearregressionslopeOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -57548,6 +58222,9 @@ export interface PlotLineOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -57604,8 +58281,23 @@ export interface PlotLineOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -58261,6 +58953,9 @@ export interface PlotLollipopOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -58318,8 +59013,23 @@ export interface PlotLollipopOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -59148,6 +59858,17 @@ export interface PlotMacdOptions {
      */
     pointDescriptionFormatter?: Function;
     pointPadding?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -60127,6 +60848,9 @@ export interface PlotMapbubbleOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -60157,8 +60881,23 @@ export interface PlotMapbubbleOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highmaps) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -61402,6 +62141,9 @@ export interface PlotMaplineOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -61432,8 +62174,23 @@ export interface PlotMaplineOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highmaps) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -62011,6 +62768,9 @@ export interface PlotMapOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -62041,8 +62801,23 @@ export interface PlotMapOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highmaps) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -63145,6 +63920,9 @@ export interface PlotMappointOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -63175,8 +63953,23 @@ export interface PlotMappointOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highmaps) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -63981,6 +64774,17 @@ export interface PlotMfiOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -64797,6 +65601,17 @@ export interface PlotMomentumOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -65609,6 +66424,17 @@ export interface PlotNatrOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -66236,6 +67062,17 @@ export interface PlotNetworkgraphOptions {
      * option can be used to override the automatic value.
      */
     pointRange?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -67017,6 +67854,17 @@ export interface PlotObvOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -67878,6 +68726,9 @@ export interface PlotOhlcOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -67943,6 +68794,10 @@ export interface PlotOhlcOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -67959,6 +68814,17 @@ export interface PlotOhlcOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -70484,6 +71350,17 @@ export interface PlotOrganizationOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -71230,6 +72107,9 @@ export interface PlotPackedbubbleOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -71260,8 +72140,23 @@ export interface PlotPackedbubbleOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -72020,6 +72915,17 @@ export interface PlotParetoOptions {
      * an individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -72784,6 +73690,17 @@ export interface PlotPcOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -73348,6 +74265,17 @@ export interface PlotPieOptions {
      * option can be used to override the automatic value.
      */
     pointRange?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -74120,6 +75048,17 @@ export interface PlotPivotpointsOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -74972,6 +75911,9 @@ export interface PlotPolygonOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -75002,8 +75944,23 @@ export interface PlotPolygonOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -75795,6 +76752,17 @@ export interface PlotPpoOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -76633,6 +77601,17 @@ export interface PlotPriceenvelopesOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -77475,6 +78454,17 @@ export interface PlotPsarOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -78323,6 +79313,9 @@ export interface PlotPyramid3dOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -78388,6 +79381,10 @@ export interface PlotPyramid3dOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -78398,6 +79395,17 @@ export interface PlotPyramid3dOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) A reversed pyramid3d is funnel3d, but the latter supports
      * neck related options: neckHeight and neckWidth
@@ -78932,6 +79940,17 @@ export interface PlotPyramidOptions {
      * option can be used to override the automatic value.
      */
     pointRange?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) The pyramid is reversed by default, as opposed to the
      * funnel, which shares the layout engine, and is not reversed.
@@ -79713,6 +80732,17 @@ export interface PlotRocOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -80526,6 +81556,17 @@ export interface PlotRsiOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -81097,6 +82138,17 @@ export interface PlotSankeyOptions {
      * an individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -81914,6 +82966,9 @@ export interface PlotScatter3dOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -81944,8 +82999,23 @@ export interface PlotScatter3dOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -83051,6 +84121,9 @@ export interface PlotScatterOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -83081,8 +84154,23 @@ export interface PlotScatterOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -83963,6 +85051,9 @@ export interface PlotSeriesOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -84019,8 +85110,23 @@ export interface PlotSeriesOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) Whether to select the series
      * initially. If `showCheckbox` is true, the checkbox next to the series
@@ -84848,6 +85954,17 @@ export interface PlotSlowstochasticOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -85681,6 +86798,17 @@ export interface PlotSmaOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -86396,6 +87524,9 @@ export interface PlotSolidgaugeOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -86426,6 +87557,10 @@ export interface PlotSolidgaugeOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -86433,6 +87568,17 @@ export interface PlotSolidgaugeOptions {
      * as a number (pixels) or percentage string.
      */
     radius?: (number|string);
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Wether to draw rounded edges on the gauge.
      */
@@ -87237,6 +88383,9 @@ export interface PlotSplineOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -87293,8 +88442,23 @@ export interface PlotSplineOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -88102,6 +89266,17 @@ export interface PlotStochasticOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -89021,6 +90196,9 @@ export interface PlotStreamgraphOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -89077,8 +90255,23 @@ export interface PlotStreamgraphOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -89613,6 +90806,17 @@ export interface PlotSunburstOptions {
      * an individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Which point to use as a root in the visualization.
      */
@@ -90439,6 +91643,17 @@ export interface PlotSupertrendOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Color of the Supertrend series line that is beneath the main
      * series.
      */
@@ -91236,6 +92451,17 @@ export interface PlotTemaOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -91949,6 +93175,17 @@ export interface PlotTilemapOptions {
      */
     pointPadding?: number;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highcharts, Highmaps) The row size - how many Y axis units each tilemap
      * row should span. Analogous to colsize.
      */
@@ -92461,6 +93698,17 @@ export interface PlotTimelineOptions {
      * option can be used to override the automatic value.
      */
     pointRange?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -93795,6 +95043,9 @@ export interface PlotTreemapOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -93825,8 +95076,23 @@ export interface PlotTreemapOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -94675,6 +95941,17 @@ export interface PlotTrendlineOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -95470,6 +96747,17 @@ export interface PlotTrixOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -96041,6 +97329,17 @@ export interface PlotVariablepieOptions {
      * option can be used to override the automatic value.
      */
     pointRange?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -96866,6 +98165,9 @@ export interface PlotVariwideOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -96931,6 +98233,10 @@ export interface PlotVariwideOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -96941,6 +98247,17 @@ export interface PlotVariwideOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -97749,6 +99066,17 @@ export interface PlotVbpOptions {
      */
     pointDescriptionFormatter?: Function;
     pointPadding?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -98747,6 +100075,9 @@ export interface PlotVectorOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -98777,8 +100108,23 @@ export interface PlotVectorOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) What part of the vector it should be rotated
      * around. Can be one of `start`, `center` and `end`. When `start`, the
@@ -99704,6 +101050,17 @@ export interface PlotVennOptions {
      */
     pointRange?: number;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -100465,6 +101822,17 @@ export interface PlotVwapOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -101351,6 +102719,9 @@ export interface PlotWaterfallOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -101416,6 +102787,10 @@ export interface PlotWaterfallOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -101426,6 +102801,17 @@ export interface PlotWaterfallOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -102241,6 +103627,17 @@ export interface PlotWilliamsrOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -103075,6 +104472,9 @@ export interface PlotWindbarbOptions {
      * It can be also be combined with `pointIntervalUnit` to draw irregular
      * time intervals.
      *
+     * If combined with `relativeXValue`, an x value can be set on each point,
+     * and the `pointInterval` is added x times to the `pointStart` setting.
+     *
      * Please note that this options applies to the _series data_, not the
      * interval of the axis ticks, which is independent.
      */
@@ -103140,6 +104540,10 @@ export interface PlotWindbarbOptions {
      * a series, pointStart defines on what value to start. For example, if a
      * series contains one yearly value starting from 1945, set pointStart to
      * 1945.
+     *
+     * If combined with `relativeXValue`, an x value can be set on each point.
+     * The x value from the point options is multiplied by `pointInterval` and
+     * added to `pointStart` to produce a modified x value.
      */
     pointStart?: number;
     /**
@@ -103150,6 +104554,17 @@ export interface PlotWindbarbOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -103956,6 +105371,17 @@ export interface PlotWmaOptions {
      */
     pointDescriptionFormatter?: Function;
     /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
      * for a selected series.
@@ -104393,6 +105819,17 @@ export interface PlotWordcloudOptions {
      * an individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts) Rotation options for the words in the wordcloud.
      */
@@ -105161,6 +106598,17 @@ export interface PlotXrangeOptions {
      * is the hoizontal length and for bar series it is the vertical length.
      */
     pointWidth?: number;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highcharts, Highstock, Gantt) Whether to select the series initially. If
      * `showCheckbox` is true, the checkbox next to the series name in the
@@ -105953,6 +107401,17 @@ export interface PlotZigzagOptions {
      * individual series. Overrides the chart wide configuration.
      */
     pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
     /**
      * (Highstock) Whether to select the series initially. If `showCheckbox` is
      * true, the checkbox next to the series name in the legend will be checked
@@ -116640,7 +118099,7 @@ export interface SeriesTooltipOptionsObject {
     /**
      * (Highstock) Number of decimals in indicator series.
      */
-    valueDecimals?: number;
+    valueDecimals?: (number|undefined);
     /**
      * (Highstock) A string to prepend to each series' y value. Overridable in
      * each series' tooltip options object.
@@ -119035,7 +120494,7 @@ export interface TooltipOptions {
     split?: boolean;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) Prevents the tooltip from
-     * switching or closing, when touched or pointed.
+     * switching or closing when touched or pointed.
      */
     stickOnContact?: boolean;
     /**
@@ -119059,7 +120518,7 @@ export interface TooltipOptions {
      * each series' y value. This is overridable in each series' tooltip options
      * object. The default is to preserve all decimals.
      */
-    valueDecimals?: number;
+    valueDecimals?: (number|undefined);
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) A string to prepend to each
      * series' y value. Overridable in each series' tooltip options object.
@@ -124131,10 +125590,10 @@ export class AST {
      * `innerHTML` in all cases where the content is not fully trusted.
      *
      * @param el
-     *        The node to set content of
+     *        Node to set content of.
      *
      * @param html
-     *        The markup string
+     *        Markup string
      */
     setElementHTML(el: (HTMLDOMElement|SVGDOMElement), html: string): void;
 }
@@ -127187,6 +128646,12 @@ export let dateFormats: Record<string, TimeFormatCallbackFunction>;
  */
 export let defaultOptions: Options;
 /**
+ * Theme options that should get applied to the chart. In module mode it might
+ * not be possible to change this property because of read-only restrictions,
+ * instead use Highcharts.setOptions.
+ */
+export let theme: Options;
+/**
  * Global `Time` object with default options. Since v6.0.5, time settings can be
  * applied individually for each chart. If no individual settings apply, this
  * `Time` object is shared by all instances.
@@ -127961,10 +129426,8 @@ export function setAnimation(animation: (boolean|Partial<AnimationOptionsObject>
  *
  * @param options
  *        The new custom chart options.
- *
- * @return Updated options.
  */
-export function setOptions(options: Options): Options;
+export function setOptions(options: Options): void;
 /**
  * Test whether at least one element in the array passes the test implemented by
  * the provided function.

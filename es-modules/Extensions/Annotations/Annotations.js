@@ -225,13 +225,12 @@ var Annotation = /** @class */ (function () {
         var xAxes = this.chart.xAxis, yAxes = this.chart.yAxis, linkedAxes = (this.options.labels || [])
             .concat(this.options.shapes || [])
             .reduce(function (axes, labelOrShape) {
+            var point = labelOrShape &&
+                (labelOrShape.point ||
+                    (labelOrShape.points && labelOrShape.points[0]));
             return [
-                xAxes[labelOrShape &&
-                    labelOrShape.point &&
-                    labelOrShape.point.xAxis] || axes[0],
-                yAxes[labelOrShape &&
-                    labelOrShape.point &&
-                    labelOrShape.point.yAxis] || axes[1]
+                xAxes[point && point.xAxis] || axes[0],
+                yAxes[point && point.yAxis] || axes[1]
             ];
         }, []);
         this.clipXAxis = linkedAxes[0];
@@ -345,10 +344,15 @@ var Annotation = /** @class */ (function () {
      * annotation's visibility is toggled.
      */
     Annotation.prototype.setVisibility = function (visible) {
-        var options = this.options, visibility = pick(visible, !options.visible);
+        var options = this.options, navigation = this.chart.navigationBindings, visibility = pick(visible, !options.visible);
         this.graphic.attr('visibility', visibility ? 'visible' : 'hidden');
         if (!visibility) {
             this.setControlPointsVisibility(false);
+            if (navigation.activeAnnotation === this &&
+                navigation.popup &&
+                navigation.popup.formType === 'annotation-toolbar') {
+                fireEvent(navigation, 'closePopup');
+            }
         }
         options.visible = visibility;
     };

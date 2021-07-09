@@ -80,7 +80,8 @@ var ColumnSeries = /** @class */ (function (_super) {
      *        Whether to initialize the animation or run it
      */
     ColumnSeries.prototype.animate = function (init) {
-        var series = this, yAxis = this.yAxis, options = series.options, inverted = this.chart.inverted, attr = {}, translateProp = inverted ? 'translateX' : 'translateY', translateStart, translatedThreshold;
+        var series = this, yAxis = this.yAxis, options = series.options, inverted = this.chart.inverted, attr = {}, translateProp = inverted ? 'translateX' : 'translateY';
+        var translateStart, translatedThreshold;
         if (init) {
             attr.scaleY = 0.001;
             translatedThreshold = clamp(yAxis.toPixels(options.threshold), yAxis.pos, yAxis.pos + yAxis.len);
@@ -146,7 +147,8 @@ var ColumnSeries = /** @class */ (function (_super) {
         // Keep backward compatibility: reversed xAxis had reversed
         // stacks
         reverseStacks = (xAxis.reversed && !reversedStacks) ||
-            (!xAxis.reversed && reversedStacks), stackKey, stackGroups = {}, columnCount = 0;
+            (!xAxis.reversed && reversedStacks), stackGroups = {};
+        var stackKey, columnCount = 0;
         // Get the total number of column type series. This is called on
         // every series. Consider moving this logic to a chart.orderStacks()
         // function and call it on init, addSeries and removeSeries
@@ -155,7 +157,8 @@ var ColumnSeries = /** @class */ (function (_super) {
         }
         else {
             series.chart.series.forEach(function (otherSeries) {
-                var otherYAxis = otherSeries.yAxis, otherOptions = otherSeries.options, columnIndex;
+                var otherYAxis = otherSeries.yAxis, otherOptions = otherSeries.options;
+                var columnIndex;
                 if (otherSeries.type === series.type &&
                     (otherSeries.visible ||
                         !series.chart.options.chart.ignoreHiddenSeries) &&
@@ -205,7 +208,8 @@ var ColumnSeries = /** @class */ (function (_super) {
      * @function Highcharts.seriesTypes.column#crispCol
      */
     ColumnSeries.prototype.crispCol = function (x, y, w, h) {
-        var chart = this.chart, borderWidth = this.borderWidth, xCrisp = -(borderWidth % 2 ? 0.5 : 0), yCrisp = borderWidth % 2 ? 0.5 : 1, right, bottom, fromTop;
+        var chart = this.chart, borderWidth = this.borderWidth, xCrisp = -(borderWidth % 2 ? 0.5 : 0);
+        var right, yCrisp = borderWidth % 2 ? 0.5 : 1;
         if (chart.inverted && chart.renderer.isVML) {
             yCrisp += 1;
         }
@@ -217,8 +221,7 @@ var ColumnSeries = /** @class */ (function (_super) {
             w = right - x;
         }
         // Vertical
-        bottom = Math.round(y + h) + yCrisp;
-        fromTop = Math.abs(y) <= 0.5 && bottom > 0.5; // #4504, #4656
+        var bottom = Math.round(y + h) + yCrisp, fromTop = Math.abs(y) <= 0.5 && bottom > 0.5; // #4504, #4656
         y = Math.round(y) + yCrisp;
         h = bottom - y;
         // Top edges are exceptions
@@ -311,10 +314,10 @@ var ColumnSeries = /** @class */ (function (_super) {
         var series = this, chart = series.chart, options = series.options, dense = series.dense =
             series.closestPointRange * series.xAxis.transA < 2, borderWidth = series.borderWidth = pick(options.borderWidth, dense ? 0 : 1 // #3635
         ), xAxis = series.xAxis, yAxis = series.yAxis, threshold = options.threshold, translatedThreshold = series.translatedThreshold =
-            yAxis.getThreshold(threshold), minPointLength = pick(options.minPointLength, 5), metrics = series.getColumnMetrics(), seriesPointWidth = metrics.width, 
+            yAxis.getThreshold(threshold), minPointLength = pick(options.minPointLength, 5), metrics = series.getColumnMetrics(), seriesPointWidth = metrics.width, seriesXOffset = series.pointXOffset = metrics.offset, dataMin = series.dataMin, dataMax = series.dataMax;
         // postprocessed for border width
-        seriesBarW = series.barW =
-            Math.max(seriesPointWidth, 1 + 2 * borderWidth), seriesXOffset = series.pointXOffset = metrics.offset, dataMin = series.dataMin, dataMax = series.dataMax;
+        var seriesBarW = series.barW =
+            Math.max(seriesPointWidth, 1 + 2 * borderWidth);
         if (chart.inverted) {
             translatedThreshold -= 0.5; // #3355
         }
@@ -328,10 +331,11 @@ var ColumnSeries = /** @class */ (function (_super) {
         Series.prototype.translate.apply(series);
         // Record the new values
         series.points.forEach(function (point) {
-            var yBottom = pick(point.yBottom, translatedThreshold), safeDistance = 999 + Math.abs(yBottom), pointWidth = seriesPointWidth, plotX = point.plotX || 0, 
+            var yBottom = pick(point.yBottom, translatedThreshold), safeDistance = 999 + Math.abs(yBottom), plotX = point.plotX || 0, 
             // Don't draw too far outside plot area (#1303, #2241,
             // #4264)
-            plotY = clamp(point.plotY, -safeDistance, yAxis.len + safeDistance), barX = plotX + seriesXOffset, barW = seriesBarW, barY = Math.min(plotY, yBottom), up, barH = Math.max(plotY, yBottom) - barY;
+            plotY = clamp(point.plotY, -safeDistance, yAxis.len + safeDistance);
+            var up, barY = Math.min(plotY, yBottom), barH = Math.max(plotY, yBottom) - barY, pointWidth = seriesPointWidth, barX = plotX + seriesXOffset, barW = seriesBarW;
             // Handle options.minPointLength
             if (minPointLength && Math.abs(barH) < minPointLength) {
                 barH = minPointLength;
@@ -414,13 +418,14 @@ var ColumnSeries = /** @class */ (function (_super) {
      * @function Highcharts.seriesTypes.column#pointAttribs
      */
     ColumnSeries.prototype.pointAttribs = function (point, state) {
-        var options = this.options, stateOptions, ret, p2o = this.pointAttrToOptions || {}, strokeOption = p2o.stroke || 'borderColor', strokeWidthOption = p2o['stroke-width'] || 'borderWidth', fill = (point && point.color) || this.color, 
+        var options = this.options, p2o = this.pointAttrToOptions || {}, strokeOption = p2o.stroke || 'borderColor', strokeWidthOption = p2o['stroke-width'] || 'borderWidth';
+        var stateOptions, zone, brightness, fill = (point && point.color) || this.color, 
         // set to fill when borderColor null:
         stroke = ((point && point[strokeOption]) ||
             options[strokeOption] ||
-            fill), strokeWidth = (point && point[strokeWidthOption]) ||
+            fill), dashstyle = (point && point.options.dashStyle) || options.dashStyle, strokeWidth = (point && point[strokeWidthOption]) ||
             options[strokeWidthOption] ||
-            this[strokeWidthOption] || 0, dashstyle = (point && point.options.dashStyle) || options.dashStyle, opacity = pick(point && point.opacity, options.opacity, 1), zone, brightness;
+            this[strokeWidthOption] || 0, opacity = pick(point && point.opacity, options.opacity, 1);
         // Handle zone colors
         if (point && this.zones.length) {
             zone = point.getZone();
@@ -454,7 +459,7 @@ var ColumnSeries = /** @class */ (function (_super) {
             dashstyle = stateOptions.dashStyle || dashstyle;
             opacity = pick(stateOptions.opacity, opacity);
         }
-        ret = {
+        var ret = {
             fill: fill,
             stroke: stroke,
             'stroke-width': strokeWidth,
@@ -474,10 +479,12 @@ var ColumnSeries = /** @class */ (function (_super) {
      * @function Highcharts.seriesTypes.column#drawPoints
      */
     ColumnSeries.prototype.drawPoints = function () {
-        var series = this, chart = this.chart, options = series.options, renderer = chart.renderer, animationLimit = options.animationLimit || 250, shapeArgs;
+        var series = this, chart = this.chart, options = series.options, renderer = chart.renderer, animationLimit = options.animationLimit || 250;
+        var shapeArgs;
         // draw the columns
         series.points.forEach(function (point) {
-            var plotY = point.plotY, graphic = point.graphic, hasGraphic = !!graphic, verb = graphic && chart.pointCount < animationLimit ?
+            var plotY = point.plotY;
+            var graphic = point.graphic, hasGraphic = !!graphic, verb = graphic && chart.pointCount < animationLimit ?
                 'animate' : 'attr';
             if (isNumber(plotY) && point.y !== null) {
                 shapeArgs = point.shapeArgs;
@@ -545,7 +552,8 @@ var ColumnSeries = /** @class */ (function (_super) {
                 pointer.isDirectTouch = true;
                 point.onMouseOver(e);
             }
-        }, dataLabels;
+        };
+        var dataLabels;
         // Add reference to the point
         series.points.forEach(function (point) {
             dataLabels = (isArray(point.dataLabels) ?

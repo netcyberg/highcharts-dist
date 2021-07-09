@@ -112,7 +112,8 @@ var eventEmitterMixin = {
             emitter.hasDragged = false;
             emitter.chart.hasDraggedAnnotation = false;
             // ControlPoints vs Annotation:
-            fireEvent(pick(emitter.target, emitter), 'afterUpdate');
+            fireEvent(pick(emitter.target && emitter.target.annotation, // #15952
+            emitter), 'afterUpdate');
             emitter.onMouseUp(e);
         }, H.isTouchDevice ? { passive: false } : void 0);
     },

@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v9.1.2 (2021-06-16)
+ * @license Highstock JS v9.1.2 (2021-07-09)
  *
  * Highcharts Stock as a plugin for Highcharts
  *
@@ -242,8 +242,15 @@
                  * Scrollbar class to use.
                  */
                 ScrollbarAxis.compose = function (AxisClass, ScrollbarClass) {
-                    var getExtremes = function (axis) {
-                        var axisMin = pick(axis.options && axis.options.min, axis.min);
+                    if (ScrollbarAxis.composed.indexOf(AxisClass) === -1) {
+                        ScrollbarAxis.composed.push(AxisClass);
+                }
+                else {
+                    return AxisClass;
+                }
+                var getExtremes = function (axis) {
+                        var axisMin = pick(axis.options && axis.options.min,
+                    axis.min);
                     var axisMax = pick(axis.options && axis.options.max,
                         axis.max);
                     return {
@@ -382,6 +389,7 @@
                 });
                 return AxisClass;
             };
+            ScrollbarAxis.composed = [];
             return ScrollbarAxis;
         }());
 
@@ -3189,6 +3197,9 @@
                         stickToMin = min <= xDataMin;
                     }
                 }
+                else {
+                    stickToMin = false; // #15864
+                }
                 return stickToMin;
             };
             /**
@@ -3423,6 +3434,23 @@
             pick = U.pick,
             timeUnits = U.timeUnits;
         // Has a dependency on Navigator due to the use of Axis.toFixedRange
+        /* eslint-disable valid-jsdoc */
+        /**
+         * @private
+         * Internal function to calculate the precise index
+         * in ordinalPositions array.
+         */
+        function getIndexInArray(ordinalPositions, val) {
+            var index = OrdinalAxis.Composition.findIndexOf(ordinalPositions,
+                val,
+                true);
+            if (ordinalPositions[index] === val) {
+                return index;
+            }
+            var percent = (val - ordinalPositions[index]) /
+                    (ordinalPositions[index + 1] - ordinalPositions[index]);
+            return index + percent;
+        }
         /**
          * Extends the axis with ordinal support.
          * @private
@@ -3605,30 +3633,30 @@
                  *        The key to being found.
                  * @param {boolean} indirectSearch
                  *        In case of lack of the point in the array, should return
-                 *        value be equal to -1 or the closest bigger index.
+                 *        value be equal to -1 or the closest smaller index.
                  *  @private
                  */
                 Composition.findIndexOf = function (sortedArray, key, indirectSearch) {
                     var start = 0,
                         end = sortedArray.length - 1,
                         middle;
-                    while (start <= end) {
-                        middle = Math.floor((start + end) / 2);
+                    while (start < end) {
+                        middle = Math.ceil((start + end) / 2);
                         // Key found as the middle element.
-                        if (sortedArray[middle] === key) {
-                            return middle;
-                        }
-                        if (sortedArray[middle] < key) {
+                        if (sortedArray[middle] <= key) {
                             // Continue searching to the right.
-                            start = middle + 1;
+                            start = middle;
                         }
                         else {
                             // Continue searching to the left.
                             end = middle - 1;
                         }
                     }
+                    if (sortedArray[start] === key) {
+                        return start;
+                    }
                     // Key could not be found.
-                    return !indirectSearch ? -1 : middle;
+                    return !indirectSearch ? -1 : start;
                 };
                 /**
                  * Get the ordinal positions for the entire data set. This is necessary
@@ -3682,6 +3710,7 @@
                                 getGroupIntervalFactor: this.getGroupIntervalFactor
                             },
                             ordinal2lin: axisProto.ordinal2lin,
+                            getIndexOfPoint: axisProto.getIndexOfPoint,
                             val2lin: axisProto.val2lin // #2590
                         };
                         fakeAxis.ordinal.axis = fakeAxis;
@@ -3698,6 +3727,9 @@
                             fakeSeries.xData = fakeSeries.xData.concat(ordinal.getOverscrollPositions());
                             fakeSeries.options = {
                                 dataGrouping: grouping ? {
+                                    firstAnchor: 'firstPoint',
+                                    anchor: 'middle',
+                                    lastAnchor: 'lastPoint',
                                     enabled: true,
                                     forced: true,
                                     // doesn't matter which, use the fastest
@@ -3828,7 +3860,6 @@
                         max = axis.dataMax;
                     if (defined(distance)) {
                         // Max + pointRange because we need to scroll to the last
-                        positions.push(max);
                         while (max <= axis.dataMax + extraRange) {
                             max += distance;
                             positions.push(max);
@@ -4152,7 +4183,7 @@
                             return positions[Math.floor(index)] + mantissa * distance;
                         }
                         // For cases when the index is not in the extended ordinal
-                        // position array (EOP), like when the value we are looking
+                        // position array, like when the value we are looking
                         // for exceed the available data,
                         // approximate that value based on the calculated slope.
                         var positionsLength = positions.length,
@@ -4170,7 +4201,7 @@
                  * Translate from a linear axis value to the corresponding ordinal axis
                  * position. If there are no gaps in the ordinal axis this will be the
                  * same. The translated value is the value that the point would have if
-                 * the axis were linear, using the same min and max.
+                 * the axis was linear, using the same min and max.
                  *
                  * @private
                  * @function Highcharts.Axis#val2lin
@@ -4186,43 +4217,75 @@
                 axisProto.val2lin = function (val, toIndex) {
                     var axis = this,
                         ordinal = axis.ordinal,
+                        slope = ordinal.slope,
                         ordinalPositions = ordinal.positions,
-                        ret;
+                        extendedOrdinalPositions = ordinal.extendedOrdinalPositions;
                     if (!ordinalPositions) {
-                        ret = val;
+                        return val;
+                    }
+                    var ordinalLength = ordinalPositions.length,
+                        ordinalIndex;
+                    // If the searched value is inside visible plotArea, ivastigate the
+                    // value basing on ordinalPositions.
+                    if (ordinalPositions[0] <= val &&
+                        ordinalPositions[ordinalLength - 1] >= val) {
+                        ordinalIndex = getIndexInArray(ordinalPositions, val);
+                        // final return value is based on ordinalIndex
                     }
                     else {
-                        var ordinalLength = ordinalPositions.length,
-                            i = void 0,
-                            distance = void 0,
-                            ordinalIndex = void 0;
-                        // first look for an exact match in the ordinalpositions array
-                        i = ordinalLength;
-                        while (i--) {
-                            if (ordinalPositions[i] === val) {
-                                ordinalIndex = i;
-                                break;
+                        if (!extendedOrdinalPositions) {
+                            extendedOrdinalPositions =
+                                ordinal.getExtendedPositions &&
+                                    ordinal.getExtendedPositions();
+                            ordinal.extendedOrdinalPositions = extendedOrdinalPositions;
+                        }
+                        if (!(extendedOrdinalPositions && extendedOrdinalPositions.length)) {
+                            return val;
+                        }
+                        var length_2 = extendedOrdinalPositions.length;
+                        if (!slope) {
+                            slope =
+                                (extendedOrdinalPositions[length_2 - 1] -
+                                    extendedOrdinalPositions[0]) /
+                                    length_2;
+                        }
+                        // OriginalPointReference is equal to the index of
+                        // first point of ordinalPositions in extendedOrdinalPositions.
+                        var originalPositionsReference = getIndexInArray(extendedOrdinalPositions,
+                            ordinalPositions[0]);
+                        // If the searched value is outside the visiblePlotArea,
+                        // check if it is inside extendedOrdinalPositions.
+                        if (val >= extendedOrdinalPositions[0] &&
+                            val <=
+                                extendedOrdinalPositions[length_2 - 1]) {
+                            // Return Value
+                            ordinalIndex = getIndexInArray(extendedOrdinalPositions, val) - originalPositionsReference;
+                        }
+                        else {
+                            // Since ordinal.slope is the average distance between 2
+                            // points on visible plotArea, this can be used to calculete
+                            // the approximate position of the point, which is outside
+                            // the extededOrdinalPositions.
+                            if (val < extendedOrdinalPositions[0]) {
+                                var diff = extendedOrdinalPositions[0] - val,
+                                    approximateIndexOffset = diff / slope;
+                                ordinalIndex =
+                                    -originalPositionsReference -
+                                        approximateIndexOffset;
+                            }
+                            else {
+                                var diff = val -
+                                        extendedOrdinalPositions[length_2 - 1],
+                                    approximateIndexOffset = diff / slope;
+                                ordinalIndex =
+                                    approximateIndexOffset +
+                                        length_2 -
+                                        originalPositionsReference;
                             }
                         }
-                        // if that failed, find the intermediate position between the
-                        // two nearest values
-                        i = ordinalLength - 1;
-                        while (i--) {
-                            if (val > ordinalPositions[i] || i === 0) { // interpolate
-                                // something between 0 and 1
-                                distance = (val - ordinalPositions[i]) /
-                                    (ordinalPositions[i + 1] - ordinalPositions[i]);
-                                ordinalIndex = i + distance;
-                                break;
-                            }
-                        }
-                        ret = toIndex ?
-                            ordinalIndex :
-                            ordinal.slope *
-                                (ordinalIndex || 0) +
-                                ordinal.offset;
                     }
-                    return ret;
+                    return toIndex ? ordinalIndex : slope * (ordinalIndex || 0) +
+                        ordinal.offset;
                 };
                 // Record this to prevent overwriting by broken-axis module (#5979)
                 axisProto.ordinal2lin = axisProto.val2lin;
@@ -5159,6 +5222,143 @@
                 // else, return is undefined
             }
         };
+        var applyGrouping = function () {
+                var series = this,
+            chart = series.chart,
+            options = series.options,
+            dataGroupingOptions = options.dataGrouping,
+            groupingEnabled = series.allowDG !== false && dataGroupingOptions &&
+                    pick(dataGroupingOptions.enabled,
+            chart.options.isStock),
+            visible = (series.visible || !chart.options.chart.ignoreHiddenSeries),
+            hasGroupedData,
+            skip,
+            lastDataGrouping = this.currentDataGrouping,
+            currentDataGrouping,
+            croppedData,
+            revertRequireSorting = false;
+            // Data needs to be sorted for dataGrouping
+            if (groupingEnabled && !series.requireSorting) {
+                series.requireSorting = revertRequireSorting = true;
+            }
+            // Skip if processData returns false or if grouping is disabled (in that
+            // order)
+            skip = skipDataGrouping(series) || !groupingEnabled;
+            // Revert original requireSorting value if changed
+            if (revertRequireSorting) {
+                series.requireSorting = false;
+            }
+            if (!skip) {
+                series.destroyGroupedData();
+                var i = void 0,
+                    processedXData = dataGroupingOptions.groupAll ?
+                        series.xData :
+                        series.processedXData,
+                    processedYData = dataGroupingOptions.groupAll ?
+                        series.yData :
+                        series.processedYData,
+                    plotSizeX = chart.plotSizeX,
+                    xAxis = series.xAxis,
+                    ordinal = xAxis.options.ordinal,
+                    groupPixelWidth = series.groupPixelWidth;
+                // Execute grouping if the amount of points is greater than the limit
+                // defined in groupPixelWidth
+                if (groupPixelWidth &&
+                    processedXData &&
+                    processedXData.length) {
+                    hasGroupedData = true;
+                    // Force recreation of point instances in series.translate, #5699
+                    series.isDirty = true;
+                    series.points = null; // #6709
+                    var extremes = xAxis.getExtremes(),
+                        xMin = extremes.min,
+                        xMax = extremes.max,
+                        groupIntervalFactor = (ordinal &&
+                            xAxis.ordinal &&
+                            xAxis.ordinal.getGroupIntervalFactor(xMin,
+                        xMax,
+                        series)) || 1,
+                        interval = (groupPixelWidth * (xMax - xMin) / plotSizeX) *
+                            groupIntervalFactor,
+                        groupPositions = xAxis.getTimeTicks(DateTimeAxis.Additions.prototype.normalizeTimeTickInterval(interval,
+                        dataGroupingOptions.units ||
+                            defaultDataGroupingUnits), 
+                        // Processed data may extend beyond axis (#4907)
+                        Math.min(xMin,
+                        processedXData[0]),
+                        Math.max(xMax,
+                        processedXData[processedXData.length - 1]),
+                        xAxis.options.startOfWeek,
+                        processedXData,
+                        series.closestPointRange),
+                        groupedData = seriesProto.groupData.apply(series,
+                        [
+                            processedXData,
+                            processedYData,
+                            groupPositions,
+                            dataGroupingOptions.approximation
+                        ]),
+                        groupedXData = groupedData.groupedXData,
+                        groupedYData = groupedData.groupedYData,
+                        gapSize = 0;
+                    // The smoothed option is deprecated, instead,
+                    // there is a fallback to the new anchoring mechanism. #12455.
+                    if (dataGroupingOptions && dataGroupingOptions.smoothed && groupedXData.length) {
+                        dataGroupingOptions.firstAnchor = 'firstPoint';
+                        dataGroupingOptions.anchor = 'middle';
+                        dataGroupingOptions.lastAnchor = 'lastPoint';
+                        error(32, false, chart, { 'dataGrouping.smoothed': 'use dataGrouping.anchor' });
+                    }
+                    anchorPoints(series, groupedXData, xMax);
+                    // Record what data grouping values were used
+                    for (i = 1; i < groupPositions.length; i++) {
+                        // The grouped gapSize needs to be the largest distance between
+                        // the group to capture varying group sizes like months or DST
+                        // crossing (#10000). Also check that the gap is not at the
+                        // start of a segment.
+                        if (!groupPositions.info.segmentStarts ||
+                            groupPositions.info.segmentStarts.indexOf(i) === -1) {
+                            gapSize = Math.max(groupPositions[i] - groupPositions[i - 1], gapSize);
+                        }
+                    }
+                    currentDataGrouping = groupPositions.info;
+                    currentDataGrouping.gapSize = gapSize;
+                    series.closestPointRange = groupPositions.info.totalRange;
+                    series.groupMap = groupedData.groupMap;
+                    if (visible) {
+                        adjustExtremes(xAxis, groupedXData);
+                    }
+                    // We calculated all group positions but we should render
+                    // only the ones within the visible range
+                    if (dataGroupingOptions.groupAll) {
+                        croppedData = series.cropData(groupedXData, groupedYData, xAxis.min, xAxis.max, 1 // Ordinal xAxis will remove left-most points otherwise
+                        );
+                        groupedXData = croppedData.xData;
+                        groupedYData = croppedData.yData;
+                        series.cropStart = croppedData.start; // #15005
+                    }
+                    // Set series props
+                    series.processedXData = groupedXData;
+                    series.processedYData = groupedYData;
+                }
+                else {
+                    series.groupMap = null;
+                }
+                series.hasGroupedData = hasGroupedData;
+                series.currentDataGrouping = currentDataGrouping;
+                series.preventGraphAnimation =
+                    (lastDataGrouping && lastDataGrouping.totalRange) !==
+                        (currentDataGrouping && currentDataGrouping.totalRange);
+            }
+        };
+        var skipDataGrouping = function (series) {
+                if (series.isCartesian &&
+                    !series.isDirty &&
+                    !series.xAxis.isDirty &&
+                    !series.yAxis.isDirty) {
+                    return false;
+            }
+        };
         var groupData = function (xData,
             yData,
             groupPositions,
@@ -5533,143 +5733,15 @@
          * @return {void}
          */
         seriesProto.groupData = groupData;
-        // Extend the basic processData method, that crops the data to the current zoom
-        // range, with data grouping logic.
-        seriesProto.processData = function () {
-            var series = this,
-                chart = series.chart,
-                options = series.options,
-                dataGroupingOptions = options.dataGrouping,
-                groupingEnabled = series.allowDG !== false && dataGroupingOptions &&
-                    pick(dataGroupingOptions.enabled,
-                chart.options.isStock),
-                visible = (series.visible || !chart.options.chart.ignoreHiddenSeries),
-                hasGroupedData,
-                skip,
-                lastDataGrouping = this.currentDataGrouping,
-                currentDataGrouping,
-                croppedData,
-                revertRequireSorting = false;
-            // Run base method
-            series.forceCrop = groupingEnabled; // #334
-            series.groupPixelWidth = null; // #2110
-            series.hasProcessed = true; // #2692
-            // Data needs to be sorted for dataGrouping
-            if (groupingEnabled && !series.requireSorting) {
-                series.requireSorting = revertRequireSorting = true;
-            }
-            // Skip if processData returns false or if grouping is disabled (in that
-            // order)
-            skip = (baseProcessData.apply(series, arguments) === false ||
-                !groupingEnabled);
-            // Revert original requireSorting value if changed
-            if (revertRequireSorting) {
-                series.requireSorting = false;
-            }
-            if (!skip) {
-                series.destroyGroupedData();
-                var i = void 0,
-                    processedXData = dataGroupingOptions.groupAll ?
-                        series.xData :
-                        series.processedXData,
-                    processedYData = dataGroupingOptions.groupAll ?
-                        series.yData :
-                        series.processedYData,
-                    plotSizeX = chart.plotSizeX,
-                    xAxis = series.xAxis,
-                    ordinal = xAxis.options.ordinal,
-                    groupPixelWidth = series.groupPixelWidth =
-                        xAxis.getGroupPixelWidth && xAxis.getGroupPixelWidth();
-                // Execute grouping if the amount of points is greater than the limit
-                // defined in groupPixelWidth
-                if (groupPixelWidth &&
-                    processedXData &&
-                    processedXData.length) {
-                    hasGroupedData = true;
-                    // Force recreation of point instances in series.translate, #5699
-                    series.isDirty = true;
-                    series.points = null; // #6709
-                    var extremes = xAxis.getExtremes(),
-                        xMin = extremes.min,
-                        xMax = extremes.max,
-                        groupIntervalFactor = (ordinal &&
-                            xAxis.ordinal &&
-                            xAxis.ordinal.getGroupIntervalFactor(xMin,
-                        xMax,
-                        series)) || 1,
-                        interval = (groupPixelWidth * (xMax - xMin) / plotSizeX) *
-                            groupIntervalFactor,
-                        groupPositions = xAxis.getTimeTicks(DateTimeAxis.AdditionsClass.prototype.normalizeTimeTickInterval(interval,
-                        dataGroupingOptions.units ||
-                            defaultDataGroupingUnits), 
-                        // Processed data may extend beyond axis (#4907)
-                        Math.min(xMin,
-                        processedXData[0]),
-                        Math.max(xMax,
-                        processedXData[processedXData.length - 1]),
-                        xAxis.options.startOfWeek,
-                        processedXData,
-                        series.closestPointRange),
-                        groupedData = seriesProto.groupData.apply(series,
-                        [
-                            processedXData,
-                            processedYData,
-                            groupPositions,
-                            dataGroupingOptions.approximation
-                        ]),
-                        groupedXData = groupedData.groupedXData,
-                        groupedYData = groupedData.groupedYData,
-                        gapSize = 0;
-                    // The smoothed option is deprecated, instead,
-                    // there is a fallback to the new anchoring mechanism. #12455.
-                    if (dataGroupingOptions && dataGroupingOptions.smoothed && groupedXData.length) {
-                        dataGroupingOptions.firstAnchor = 'firstPoint';
-                        dataGroupingOptions.anchor = 'middle';
-                        dataGroupingOptions.lastAnchor = 'lastPoint';
-                        error(32, false, chart, { 'dataGrouping.smoothed': 'use dataGrouping.anchor' });
-                    }
-                    anchorPoints(series, groupedXData, xMax);
-                    // Record what data grouping values were used
-                    for (i = 1; i < groupPositions.length; i++) {
-                        // The grouped gapSize needs to be the largest distance between
-                        // the group to capture varying group sizes like months or DST
-                        // crossing (#10000). Also check that the gap is not at the
-                        // start of a segment.
-                        if (!groupPositions.info.segmentStarts ||
-                            groupPositions.info.segmentStarts.indexOf(i) === -1) {
-                            gapSize = Math.max(groupPositions[i] - groupPositions[i - 1], gapSize);
-                        }
-                    }
-                    currentDataGrouping = groupPositions.info;
-                    currentDataGrouping.gapSize = gapSize;
-                    series.closestPointRange = groupPositions.info.totalRange;
-                    series.groupMap = groupedData.groupMap;
-                    if (visible) {
-                        adjustExtremes(xAxis, groupedXData);
-                    }
-                    // We calculated all group positions but we should render
-                    // only the ones within the visible range
-                    if (dataGroupingOptions.groupAll) {
-                        croppedData = series.cropData(groupedXData, groupedYData, xAxis.min, xAxis.max, 1 // Ordinal xAxis will remove left-most points otherwise
-                        );
-                        groupedXData = croppedData.xData;
-                        groupedYData = croppedData.yData;
-                        series.cropStart = croppedData.start; // #15005
-                    }
-                    // Set series props
-                    series.processedXData = groupedXData;
-                    series.processedYData = groupedYData;
-                }
-                else {
-                    series.groupMap = null;
-                }
-                series.hasGroupedData = hasGroupedData;
-                series.currentDataGrouping = currentDataGrouping;
-                series.preventGraphAnimation =
-                    (lastDataGrouping && lastDataGrouping.totalRange) !==
-                        (currentDataGrouping && currentDataGrouping.totalRange);
-            }
-        };
+        /**
+         * For the processed data, calculate the grouped data if needed.
+         *
+         * @private
+         * @function Highcharts.Series#applyGrouping
+         *
+         * @return {void}
+         */
+        seriesProto.applyGrouping = applyGrouping;
         // Destroy the grouped data points. #622, #740
         seriesProto.destroyGroupedData = function () {
             // Clear previous groups
@@ -5695,6 +5767,21 @@
             this.destroyGroupedData(); // #622
             this.groupedData = this.hasGroupedData ? this.points : null;
         };
+        // When all series are processed, calculate the group pixel width and then
+        // if this value is different than zero apply groupings.
+        addEvent(Axis, 'postProcessData', function () {
+            var axis = this,
+                series = axis.series;
+            series.forEach(function (series) {
+                // Reset the groupPixelWidth, then calculate if needed.
+                series.groupPixelWidth = void 0; // #2110
+                series.groupPixelWidth = axis.getGroupPixelWidth && axis.getGroupPixelWidth();
+                if (series.groupPixelWidth) {
+                    series.hasProcessed = true; // #2692
+                    series.applyGrouping();
+                }
+            });
+        });
         // Override point prototype to throw a warning when trying to update grouped
         // points.
         addEvent(Point, 'update', function () {
@@ -5721,7 +5808,7 @@
                 dateTimeLabelFormats,
                 labelFormats,
                 formattedKey,
-                formatString = tooltipOptions[(e.isFooter ? 'footer' : 'header') + 'Format'];
+                formatString = tooltipOptions[e.isFooter ? 'footerFormat' : 'headerFormat'];
             // apply only to grouped series
             if (xAxis &&
                 xAxis.options.type === 'datetime' &&
@@ -5748,8 +5835,8 @@
                     // best fit, so if the least distance between points is one minute, show
                     // it, but if the least distance is one day, skip hours and minutes etc.
                 }
-                else if (!xDateFormat && dateTimeLabelFormats) {
-                    xDateFormat = tooltip.getXDateFormat(labelConfig, tooltipOptions, xAxis);
+                else if (!xDateFormat && dateTimeLabelFormats && xAxis.dateTime) {
+                    xDateFormat = xAxis.dateTime.getXDateFormat(labelConfig.x, tooltipOptions.dateTimeLabelFormats);
                 }
                 // now format the key
                 formattedKey = time.dateFormat(xDateFormat, labelConfig.key);
@@ -5826,7 +5913,7 @@
             i = len;
             while (i--) {
                 dgOptions = series[i].options.dataGrouping;
-                if (dgOptions && series[i].hasProcessed) { // #2692
+                if (dgOptions) { // #2692
                     dataLength = (series[i].processedXData || series[i].data).length;
                     // Execute grouping if the amount of points is greater than the
                     // limit defined in groupPixelWidth
@@ -9205,7 +9292,7 @@
                     }
                 }
                 // Create the text label
-                var text = lang[isMin ? 'rangeSelectorFrom' : 'rangeSelectorTo'];
+                var text = lang[isMin ? 'rangeSelectorFrom' : 'rangeSelectorTo'] || '';
                 var label = renderer
                         .label(text, 0)
                         .addClass('highcharts-range-label')
@@ -11173,6 +11260,22 @@
             if (this.chart.hasRendered) {
                 this.isDirty = true;
             }
+        };
+        /**
+         * Based on the data grouping options decides whether
+         * the data should be cropped while processing.
+         *
+         * @ignore
+         * @function Highcharts.Series#forceCropping
+         */
+        Series.prototype.forceCropping = function () {
+            var chart = this.chart,
+                options = this.options,
+                dataGroupingOptions = options.dataGrouping,
+                groupingEnabled = this.allowDG !== false && dataGroupingOptions &&
+                    pick(dataGroupingOptions.enabled,
+                chart.options.isStock);
+            return groupingEnabled;
         };
         /**
          * Extend series.processData by finding the first y value in the plot area,

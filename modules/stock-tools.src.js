@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v9.1.2 (2021-06-16)
+ * @license Highstock JS v9.1.2 (2021-07-09)
  *
  * Advanced Highcharts Stock tools
  *
@@ -154,7 +154,8 @@
                     emitter.hasDragged = false;
                     emitter.chart.hasDraggedAnnotation = false;
                     // ControlPoints vs Annotation:
-                    fireEvent(pick(emitter.target, emitter), 'afterUpdate');
+                    fireEvent(pick(emitter.target && emitter.target.annotation, // #15952
+                    emitter), 'afterUpdate');
                     emitter.onMouseUp(e);
                 }, H.isTouchDevice ? { passive: false } : void 0);
             },
@@ -2644,14 +2645,13 @@
                         .concat(this.options.shapes || [])
                         .reduce(function (axes,
                     labelOrShape) {
-                        return [
-                            xAxes[labelOrShape &&
-                                labelOrShape.point &&
-                                labelOrShape.point.xAxis] || axes[0],
-                            yAxes[labelOrShape &&
-                                labelOrShape.point &&
-                                labelOrShape.point.yAxis] || axes[1]
-                        ];
+                        var point = labelOrShape &&
+                            (labelOrShape.point ||
+                                (labelOrShape.points && labelOrShape.points[0]));
+                    return [
+                        xAxes[point && point.xAxis] || axes[0],
+                        yAxes[point && point.yAxis] || axes[1]
+                    ];
                 }, []);
                 this.clipXAxis = linkedAxes[0];
                 this.clipYAxis = linkedAxes[1];
@@ -2765,10 +2765,16 @@
              */
             Annotation.prototype.setVisibility = function (visible) {
                 var options = this.options,
+                    navigation = this.chart.navigationBindings,
                     visibility = pick(visible, !options.visible);
                 this.graphic.attr('visibility', visibility ? 'visible' : 'hidden');
                 if (!visibility) {
                     this.setControlPointsVisibility(false);
+                    if (navigation.activeAnnotation === this &&
+                        navigation.popup &&
+                        navigation.popup.formType === 'annotation-toolbar') {
+                        fireEvent(navigation, 'closePopup');
+                    }
                 }
                 options.visible = visibility;
             };
@@ -3962,14 +3968,10 @@
             updateRectSize: function (event, annotation) {
                 var chart = annotation.chart,
                     options = annotation.options.typeOptions,
-                    coords = chart.pointer.getCoordinates(event),
-                    coordsX = chart.navigationBindings.utils.getAssignedAxis(coords.xAxis),
-                    coordsY = chart.navigationBindings.utils.getAssignedAxis(coords.yAxis),
-                    width,
-                    height;
-                if (coordsX && coordsY) {
-                    width = coordsX.value - options.point.x;
-                    height = options.point.y - coordsY.value;
+                    xAxis = isNumber(options.xAxis) && chart.xAxis[options.xAxis],
+                    yAxis = isNumber(options.yAxis) && chart.yAxis[options.yAxis];
+                if (xAxis && yAxis) {
+                    var x = xAxis.toValue(event[xAxis.horiz ? 'chartX' : 'chartY']), y = yAxis.toValue(event[yAxis.horiz ? 'chartX' : 'chartY']), width = x - options.point.x, height = options.point.y - y;
                     annotation.update({
                         typeOptions: {
                             background: {
@@ -5313,12 +5315,13 @@
          * @return {void}
          */
         bindingsUtils.updateHeight = function (e, annotation) {
-            var coordsY = this.utils.getAssignedAxis(this.chart.pointer.getCoordinates(e).yAxis);
-            if (coordsY) {
+            var options = annotation.options.typeOptions,
+                yAxis = isNumber(options.yAxis) && this.chart.yAxis[options.yAxis];
+            if (yAxis && options.points) {
                 annotation.update({
                     typeOptions: {
-                        height: coordsY.value -
-                            annotation.options.typeOptions.points[1].y
+                        height: yAxis.toValue(e[yAxis.horiz ? 'chartX' : 'chartY']) -
+                            (options.points[1].y || 0)
                     }
                 });
             }
@@ -5414,14 +5417,13 @@
         bindingsUtils.updateNthPoint = function (startIndex) {
             return function (e, annotation) {
                 var options = annotation.options.typeOptions,
-                    coords = this.chart.pointer.getCoordinates(e),
-                    coordsX = this.utils.getAssignedAxis(coords.xAxis),
-                    coordsY = this.utils.getAssignedAxis(coords.yAxis);
-                if (coordsX && coordsY) {
+                    xAxis = isNumber(options.xAxis) && this.chart.xAxis[options.xAxis],
+                    yAxis = isNumber(options.yAxis) && this.chart.yAxis[options.yAxis];
+                if (xAxis && yAxis) {
                     options.points.forEach(function (point, index) {
                         if (index >= startIndex) {
-                            point.x = coordsX.value;
-                            point.y = coordsY.value;
+                            point.x = xAxis.toValue(e[xAxis.horiz ? 'chartX' : 'chartY']);
+                            point.y = yAxis.toValue(e[yAxis.horiz ? 'chartX' : 'chartY']);
                         }
                     });
                     annotation.update({
@@ -7240,6 +7242,7 @@
                         // Indicators' params (#15170):
                         index: 'Index',
                         period: 'Period',
+                        periods: 'Periods',
                         standardDeviation: 'Standard deviation',
                         periodTenkan: 'Tenkan period',
                         periodSenkouSpanB: 'Senkou Span B period',
@@ -8234,6 +8237,7 @@
                 container.appendChild(wrapper);
                 // Mimic event behaviour of being outside chart.container
                 [
+                    'mousedown',
                     'mousemove',
                     'click',
                     'touchstart'

@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v9.1.2 (2021-06-16)
+ * @license Highcharts JS v9.1.2 (2021-07-09)
  *
  * Client side exporting module
  *
@@ -141,7 +141,7 @@
 
         return exports;
     });
-    _registerModule(_modules, 'Extensions/OfflineExporting.js', [_modules['Core/Chart/Chart.js'], _modules['Core/Globals.js'], _modules['Core/DefaultOptions.js'], _modules['Core/Renderer/SVG/SVGRenderer.js'], _modules['Core/Utilities.js'], _modules['Extensions/DownloadURL.js']], function (Chart, H, D, SVGRenderer, U, DownloadURL) {
+    _registerModule(_modules, 'Extensions/OfflineExporting.js', [_modules['Core/Chart/Chart.js'], _modules['Extensions/Exporting/Exporting.js'], _modules['Core/Globals.js'], _modules['Core/DefaultOptions.js'], _modules['Core/Utilities.js'], _modules['Extensions/DownloadURL.js']], function (Chart, Exporting, H, D, U, DownloadURL) {
         /* *
          *
          *  Client side exporting module
@@ -175,7 +175,6 @@
          * @function getScript
          * @param {string} scriptLocation
          * @param {Function} callback
-         * @return {void}
          */
         function getScript(scriptLocation, callback) {
             var head = doc.getElementsByTagName('head')[0], script = doc.createElement('script');
@@ -247,8 +246,6 @@
          *        finallyCallback is always called at the end of the process. All
          *        callbacks receive four arguments: imageURL, imageType, callbackArgs,
          *        and scale.
-         *
-         * @return {void}
          */
         function imageToDataUrl(imageURL, imageType, callbackArgs, scale, successCallback, taintedCallback, noCanvasSupportCallback, failedLoadCallback, finallyCallback) {
             var img = new win.Image(), taintedHandler, loadHandler = function () {
@@ -698,36 +695,7 @@
             // inline styles that we want to pass through. There are so many styles by
             // default in IE that we don't want to blacklist them all.
             if (H.isMS && chart.styledMode) {
-                SVGRenderer.prototype.inlineWhitelist = [
-                    /^blockSize/,
-                    /^border/,
-                    /^caretColor/,
-                    /^color/,
-                    /^columnRule/,
-                    /^columnRuleColor/,
-                    /^cssFloat/,
-                    /^cursor/,
-                    /^fill$/,
-                    /^fillOpacity/,
-                    /^font/,
-                    /^inlineSize/,
-                    /^length/,
-                    /^lineHeight/,
-                    /^opacity/,
-                    /^outline/,
-                    /^parentRule/,
-                    /^rx$/,
-                    /^ry$/,
-                    /^stroke/,
-                    /^textAlign/,
-                    /^textAnchor/,
-                    /^textDecoration/,
-                    /^transform/,
-                    /^vectorEffect/,
-                    /^visibility/,
-                    /^x$/,
-                    /^y$/
-                ];
+                Exporting.inlineWhitelist.push(/^blockSize/, /^border/, /^caretColor/, /^color/, /^columnRule/, /^columnRuleColor/, /^cssFloat/, /^cursor/, /^fill$/, /^fillOpacity/, /^font/, /^inlineSize/, /^length/, /^lineHeight/, /^opacity/, /^outline/, /^parentRule/, /^rx$/, /^ry$/, /^stroke/, /^textAlign/, /^textAnchor/, /^textDecoration/, /^transform/, /^vectorEffect/, /^visibility/, /^x$/, /^y$/);
             }
             // Always fall back on:
             // - MS browsers: Embedded images JPEG/PNG, or any PDF

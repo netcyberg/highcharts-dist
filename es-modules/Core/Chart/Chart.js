@@ -673,16 +673,18 @@ var Chart = /** @class */ (function () {
      *         The currently selected points.
      */
     Chart.prototype.getSelectedPoints = function () {
-        var points = [];
-        this.series.forEach(function (serie) {
+        return this.series.reduce(function (acc, series) {
             // For one-to-one points inspect series.data in order to retrieve
             // points outside the visible range (#6445). For grouped data,
             // inspect the generated series.points.
-            points = points.concat(serie.getPointsCollection().filter(function (point) {
-                return pick(point.selectedStaging, point.selected);
-            }));
-        });
-        return points;
+            series.getPointsCollection()
+                .forEach(function (point) {
+                if (pick(point.selectedStaging, point.selected)) {
+                    acc.push(point);
+                }
+            });
+            return acc;
+        }, []);
     };
     /**
      * Returns an array of all currently selected series in the chart. Series
@@ -2430,7 +2432,7 @@ var Chart = /** @class */ (function () {
             }
         });
         itemsForRemoval.forEach(function (item) {
-            if (item.chart) { // #9097, avoid removing twice
+            if (item.chart && item.remove) { // #9097, avoid removing twice
                 item.remove(false);
             }
         });
@@ -2751,7 +2753,6 @@ extend(Chart.prototype, {
     collectionsWithUpdate: [
         'xAxis',
         'yAxis',
-        'zAxis',
         'series'
     ],
     /**

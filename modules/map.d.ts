@@ -226,6 +226,19 @@ declare module "../highcharts" {
      * Utility for reading SVG paths directly.
      */
     function splitPath(path: (string|Array<(string|number)>)): SVGPathArray;
+    /**
+     * If ranges are not specified, determine ranges from rendered bubble series
+     * and render legend again.
+     */
+    function chartDrawChartBox(): void;
+    /**
+     * Start the bubble legend creation process.
+     */
+    function onLegendAfterGetAllItems(): void;
+    /**
+     * Toggle bubble legend depending on the visible status of bubble series.
+     */
+    function onSeriesLegendItemClick(): void;
 }
 export default factory;
 export let Highcharts: typeof _Highcharts;

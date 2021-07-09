@@ -1,5 +1,5 @@
 /**
- * @license Highmaps JS v9.1.2 (2021-06-16)
+ * @license Highmaps JS v9.1.2 (2021-07-09)
  *
  * (c) 2009-2021 Torstein Honsi
  *
@@ -1792,10 +1792,12 @@
                     stateOptions,
                     brightness, 
                     // Get old properties in order to keep backward compatibility
-                    borderColor = seriesOptions.borderColor ||
+                    borderColor = (point && point.options.borderColor) ||
+                        seriesOptions.borderColor ||
                         heatmapPlotOptions.borderColor ||
                         seriesPlotOptions.borderColor,
-                    borderWidth = seriesOptions.borderWidth ||
+                    borderWidth = (point && point.options.borderWidth) ||
+                        seriesOptions.borderWidth ||
                         heatmapPlotOptions.borderWidth ||
                         seriesPlotOptions.borderWidth ||
                         attr['stroke-width'];
@@ -1978,7 +1980,9 @@
                 nullColor: palette.neutralColor3,
                 dataLabels: {
                     formatter: function () {
-                        return this.point.value;
+                        var numberFormatter = this.series.chart.numberFormatter;
+                        var value = this.point.value;
+                        return isNumber(value) ? numberFormatter(value, -1) : '';
                     },
                     inside: true,
                     verticalAlign: 'middle',

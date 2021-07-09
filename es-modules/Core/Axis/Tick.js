@@ -106,11 +106,16 @@ var Tick = /** @class */ (function () {
         }
         // Set the datetime label format. If a higher rank is set for this
         // position, use that. If not, use the general format.
-        if (axis.dateTime && tickPositionInfo) {
-            dateTimeLabelFormats = chart.time.resolveDTLFormat(options.dateTimeLabelFormats[(!options.grid &&
-                tickPositionInfo.higherRanks[pos]) ||
-                tickPositionInfo.unitName]);
-            dateTimeLabelFormat = dateTimeLabelFormats.main;
+        if (axis.dateTime) {
+            if (tickPositionInfo) {
+                dateTimeLabelFormats = chart.time.resolveDTLFormat(options.dateTimeLabelFormats[(!options.grid &&
+                    tickPositionInfo.higherRanks[pos]) ||
+                    tickPositionInfo.unitName]);
+                dateTimeLabelFormat = dateTimeLabelFormats.main;
+            }
+            else if (isNumber(value)) { // #1441
+                dateTimeLabelFormat = axis.dateTime.getXDateFormat(value, (options.dateTimeLabelFormats || {}));
+            }
         }
         // set properties for access in render method
         /**

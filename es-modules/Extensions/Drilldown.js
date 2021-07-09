@@ -586,7 +586,7 @@ Chart.prototype.getDrilldownBackText = function () {
     if (drilldownLevels && drilldownLevels.length > 0) { // #3352, async loading
         lastLevel = drilldownLevels[drilldownLevels.length - 1];
         lastLevel.series = lastLevel.seriesOptions;
-        return format(this.options.lang.drillUpText, lastLevel);
+        return format(this.options.lang.drillUpText || '', lastLevel);
     }
 };
 Chart.prototype.showDrillUpButton = function () {

@@ -105,10 +105,9 @@ var bindingsUtils = {
      * Annotation to be updated
      */
     updateRectSize: function (event, annotation) {
-        var chart = annotation.chart, options = annotation.options.typeOptions, coords = chart.pointer.getCoordinates(event), coordsX = chart.navigationBindings.utils.getAssignedAxis(coords.xAxis), coordsY = chart.navigationBindings.utils.getAssignedAxis(coords.yAxis), width, height;
-        if (coordsX && coordsY) {
-            width = coordsX.value - options.point.x;
-            height = options.point.y - coordsY.value;
+        var chart = annotation.chart, options = annotation.options.typeOptions, xAxis = isNumber(options.xAxis) && chart.xAxis[options.xAxis], yAxis = isNumber(options.yAxis) && chart.yAxis[options.yAxis];
+        if (xAxis && yAxis) {
+            var x = xAxis.toValue(event[xAxis.horiz ? 'chartX' : 'chartY']), y = yAxis.toValue(event[yAxis.horiz ? 'chartX' : 'chartY']), width = x - options.point.x, height = options.point.y - y;
             annotation.update({
                 typeOptions: {
                     background: {

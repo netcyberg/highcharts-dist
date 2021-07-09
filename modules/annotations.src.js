@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v9.1.2 (2021-06-16)
+ * @license Highcharts JS v9.1.2 (2021-07-09)
  *
  * Annotations module
  *
@@ -153,7 +153,8 @@
                     emitter.hasDragged = false;
                     emitter.chart.hasDraggedAnnotation = false;
                     // ControlPoints vs Annotation:
-                    fireEvent(pick(emitter.target, emitter), 'afterUpdate');
+                    fireEvent(pick(emitter.target && emitter.target.annotation, // #15952
+                    emitter), 'afterUpdate');
                     emitter.onMouseUp(e);
                 }, H.isTouchDevice ? { passive: false } : void 0);
             },
@@ -2643,14 +2644,13 @@
                         .concat(this.options.shapes || [])
                         .reduce(function (axes,
                     labelOrShape) {
-                        return [
-                            xAxes[labelOrShape &&
-                                labelOrShape.point &&
-                                labelOrShape.point.xAxis] || axes[0],
-                            yAxes[labelOrShape &&
-                                labelOrShape.point &&
-                                labelOrShape.point.yAxis] || axes[1]
-                        ];
+                        var point = labelOrShape &&
+                            (labelOrShape.point ||
+                                (labelOrShape.points && labelOrShape.points[0]));
+                    return [
+                        xAxes[point && point.xAxis] || axes[0],
+                        yAxes[point && point.yAxis] || axes[1]
+                    ];
                 }, []);
                 this.clipXAxis = linkedAxes[0];
                 this.clipYAxis = linkedAxes[1];
@@ -2764,10 +2764,16 @@
              */
             Annotation.prototype.setVisibility = function (visible) {
                 var options = this.options,
+                    navigation = this.chart.navigationBindings,
                     visibility = pick(visible, !options.visible);
                 this.graphic.attr('visibility', visibility ? 'visible' : 'hidden');
                 if (!visibility) {
                     this.setControlPointsVisibility(false);
+                    if (navigation.activeAnnotation === this &&
+                        navigation.popup &&
+                        navigation.popup.formType === 'annotation-toolbar') {
+                        fireEvent(navigation, 'closePopup');
+                    }
                 }
                 options.visible = visibility;
             };
@@ -3961,14 +3967,10 @@
             updateRectSize: function (event, annotation) {
                 var chart = annotation.chart,
                     options = annotation.options.typeOptions,
-                    coords = chart.pointer.getCoordinates(event),
-                    coordsX = chart.navigationBindings.utils.getAssignedAxis(coords.xAxis),
-                    coordsY = chart.navigationBindings.utils.getAssignedAxis(coords.yAxis),
-                    width,
-                    height;
-                if (coordsX && coordsY) {
-                    width = coordsX.value - options.point.x;
-                    height = options.point.y - coordsY.value;
+                    xAxis = isNumber(options.xAxis) && chart.xAxis[options.xAxis],
+                    yAxis = isNumber(options.yAxis) && chart.yAxis[options.yAxis];
+                if (xAxis && yAxis) {
+                    var x = xAxis.toValue(event[xAxis.horiz ? 'chartX' : 'chartY']), y = yAxis.toValue(event[yAxis.horiz ? 'chartX' : 'chartY']), width = x - options.point.x, height = options.point.y - y;
                     annotation.update({
                         typeOptions: {
                             background: {
@@ -5188,12 +5190,14 @@
                     }, void 0, parentDiv).appendChild(doc.createTextNode(lang[optionName] || optionName));
                 }
                 // add input
-                createElement(INPUT, {
-                    name: inputName,
-                    value: value[0],
-                    type: value[1],
-                    className: PREFIX + 'popup-field'
-                }, void 0, parentDiv).setAttribute(PREFIX + 'data-name', option);
+                if (value !== '') {
+                    createElement(INPUT, {
+                        name: inputName,
+                        value: value[0],
+                        type: value[1],
+                        className: PREFIX + 'popup-field'
+                    }, void 0, parentDiv).setAttribute(PREFIX + 'data-name', option);
+                }
             },
             /**
              * Create button.
@@ -5269,6 +5273,7 @@
                     toolbarClass = PREFIX + 'annotation-toolbar',
                     popupCloseBtn = popupDiv
                         .querySelectorAll('.' + PREFIX + 'popup-close')[0];
+                this.formType = void 0;
                 // reset content
                 popupDiv.innerHTML = '';
                 // reset toolbar styles if exists
@@ -5322,6 +5327,7 @@
                 if (type === 'flag') {
                     this.annotations.addForm.call(this, chart, options, callback, true);
                 }
+                this.formType = type;
                 // Explicit height is needed to make inner elements scrollable
                 this.container.style.height = this.container.offsetHeight + 'px';
             },
@@ -5715,6 +5721,8 @@
                         parentFullName = parentNode + '.' + fieldName;
                         if (value !== void 0) { // skip if field is unnecessary, #15362
                             if (isObject(value)) {
+                                addInput.call(// (15733) 'Periods' has an arrayed value. Label must be created here.
+                                _self, parentFullName, type, parentDiv, '');
                                 addParamInputs.call(_self, chart, parentFullName, value, type, parentDiv);
                             }
                             else if (

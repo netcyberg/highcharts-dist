@@ -2059,15 +2059,6 @@ var defaultOptions = {
          * @apioption tooltip.nullFormatter
          */
         /**
-         * The number of milliseconds to wait until the tooltip is hidden when
-         * mouse out from a point or chart.
-         *
-         * @type      {number}
-         * @default   500
-         * @since     3.0
-         * @apioption tooltip.hideDelay
-         */
-        /**
          * Whether to allow the tooltip to render outside the chart's SVG
          * element box. By default (`false`), the tooltip is rendered within the
          * chart's SVG element, which results in the tooltip being aligned
@@ -2128,69 +2119,6 @@ var defaultOptions = {
          * @type      {Highcharts.TooltipPositionerCallbackFunction}
          * @since     2.2.4
          * @apioption tooltip.positioner
-         */
-        /**
-         * The name of a symbol to use for the border around the tooltip. Can
-         * be one of: `"callout"`, `"circle"` or `"rect"`. When
-         * [tooltip.split](#tooltip.split)
-         * option is enabled, shape is applied to all boxes except header, which
-         * is controlled by
-         * [tooltip.headerShape](#tooltip.headerShape).
-         *
-         * Custom callbacks for symbol path generation can also be added to
-         * `Highcharts.SVGRenderer.prototype.symbols` the same way as for
-         * [series.marker.symbol](plotOptions.line.marker.symbol).
-         *
-         * @type      {Highcharts.TooltipShapeValue}
-         * @default   callout
-         * @since     4.0
-         * @apioption tooltip.shape
-         */
-        /**
-         * The name of a symbol to use for the border around the tooltip
-         * header. Applies only when [tooltip.split](#tooltip.split) is
-         * enabled.
-         *
-         * Custom callbacks for symbol path generation can also be added to
-         * `Highcharts.SVGRenderer.prototype.symbols` the same way as for
-         * [series.marker.symbol](plotOptions.line.marker.symbol).
-         *
-         * @see [tooltip.shape](#tooltip.shape)
-         *
-         * @sample {highstock} stock/tooltip/split-positioner/
-         *         Different shapes for header and split boxes
-         *
-         * @type       {Highcharts.TooltipShapeValue}
-         * @default    callout
-         * @validvalue ["callout", "square"]
-         * @since      7.0
-         * @apioption  tooltip.headerShape
-         */
-        /**
-         * When the tooltip is shared, the entire plot area will capture mouse
-         * movement or touch events. Tooltip texts for series types with ordered
-         * data (not pie, scatter, flags etc) will be shown in a single bubble.
-         * This is recommended for single series charts and for tablet/mobile
-         * optimized charts.
-         *
-         * See also [tooltip.split](#tooltip.split), that is better suited for
-         * charts with many series, especially line-type series. The
-         * `tooltip.split` option takes precedence over `tooltip.shared`.
-         *
-         * @sample {highcharts} highcharts/tooltip/shared-false/
-         *         False by default
-         * @sample {highcharts} highcharts/tooltip/shared-true/
-         *         True
-         * @sample {highcharts} highcharts/tooltip/shared-x-crosshair/
-         *         True with x axis crosshair
-         * @sample {highcharts} highcharts/tooltip/shared-true-mixed-types/
-         *         True with mixed series types
-         *
-         * @type      {boolean}
-         * @default   false
-         * @since     2.1
-         * @product   highcharts highstock
-         * @apioption tooltip.shared
          */
         /**
          * Split the tooltip into one label per series, with the header close
@@ -2255,7 +2183,7 @@ var defaultOptions = {
          * @sample {highmaps} maps/tooltip/valuedecimals/
          *         Set decimals, prefix and suffix for the value
          *
-         * @type      {number}
+         * @type      {number|undefined}
          * @since     2.2
          * @apioption tooltip.valueDecimals
          */
@@ -2377,11 +2305,77 @@ var defaultOptions = {
          */
         footerFormat: '',
         /**
+         * The name of a symbol to use for the border around the tooltip
+         * header. Applies only when [tooltip.split](#tooltip.split) is
+         * enabled.
+         *
+         * Custom callbacks for symbol path generation can also be added to
+         * `Highcharts.SVGRenderer.prototype.symbols` the same way as for
+         * [series.marker.symbol](plotOptions.line.marker.symbol).
+         *
+         * @see [tooltip.shape](#tooltip.shape)
+         *
+         * @sample {highstock} stock/tooltip/split-positioner/
+         *         Different shapes for header and split boxes
+         *
+         * @type       {Highcharts.TooltipShapeValue}
+         * @validvalue ["callout", "square"]
+         * @since      7.0
+         */
+        headerShape: 'callout',
+        /**
+         * The number of milliseconds to wait until the tooltip is hidden when
+         * mouse out from a point or chart.
+         *
+         * @since     3.0
+         */
+        hideDelay: 500,
+        /**
          * Padding inside the tooltip, in pixels.
          *
          * @since      5.0.0
          */
         padding: 8,
+        /**
+         * The name of a symbol to use for the border around the tooltip. Can
+         * be one of: `"callout"`, `"circle"` or `"rect"`. When
+         * [tooltip.split](#tooltip.split)
+         * option is enabled, shape is applied to all boxes except header, which
+         * is controlled by
+         * [tooltip.headerShape](#tooltip.headerShape).
+         *
+         * Custom callbacks for symbol path generation can also be added to
+         * `Highcharts.SVGRenderer.prototype.symbols` the same way as for
+         * [series.marker.symbol](plotOptions.line.marker.symbol).
+         *
+         * @type      {Highcharts.TooltipShapeValue}
+         * @since     4.0
+         */
+        shape: 'callout',
+        /**
+         * When the tooltip is shared, the entire plot area will capture mouse
+         * movement or touch events. Tooltip texts for series types with ordered
+         * data (not pie, scatter, flags etc) will be shown in a single bubble.
+         * This is recommended for single series charts and for tablet/mobile
+         * optimized charts.
+         *
+         * See also [tooltip.split](#tooltip.split), that is better suited for
+         * charts with many series, especially line-type series. The
+         * `tooltip.split` option takes precedence over `tooltip.shared`.
+         *
+         * @sample {highcharts} highcharts/tooltip/shared-false/
+         *         False by default
+         * @sample {highcharts} highcharts/tooltip/shared-true/
+         *         True
+         * @sample {highcharts} highcharts/tooltip/shared-x-crosshair/
+         *         True with x axis crosshair
+         * @sample {highcharts} highcharts/tooltip/shared-true-mixed-types/
+         *         True with mixed series types
+         *
+         * @since     2.1
+         * @product   highcharts highstock
+         */
+        shared: false,
         /**
          * Proximity snap for graphs or single points. It defaults to 10 for
          * mouse-powered devices and 25 for touch devices.
@@ -2479,6 +2473,7 @@ var defaultOptions = {
          * @type {Highcharts.ColorString|Highcharts.GradientColorObject|Highcharts.PatternObject}
          */
         backgroundColor: color(palette.neutralColor3)
+            // @todo: Disallow undefined as input for colors
             .setOpacity(0.85).get(),
         /**
          * The pixel width of the tooltip border.
@@ -2516,6 +2511,16 @@ var defaultOptions = {
          */
         shadow: true,
         /**
+         * Prevents the tooltip from switching or closing when touched or
+         * pointed.
+         *
+         * @sample highcharts/tooltip/stickoncontact/
+         *         Tooltip sticks on pointer contact
+         *
+         * @since     8.0.1
+         */
+        stickOnContact: false,
+        /**
          * CSS styles for the tooltip. The tooltip can also be styled through
          * the CSS class `.highcharts-tooltip`.
          *
@@ -2537,7 +2542,23 @@ var defaultOptions = {
             fontSize: '12px',
             /** @internal */
             whiteSpace: 'nowrap'
-        }
+        },
+        /**
+         * Use HTML to render the contents of the tooltip instead of SVG. Using
+         * HTML allows advanced formatting like tables and images in the
+         * tooltip. It is also recommended for rtl languages as it works around
+         * rtl bugs in early Firefox.
+         *
+         * @sample {highcharts|highstock} highcharts/tooltip/footerformat/
+         *         A table for value alignment
+         * @sample {highcharts|highstock} highcharts/tooltip/fullhtml/
+         *         Full HTML tooltip
+         * @sample {highmaps} maps/tooltip/usehtml/
+         *         Pure HTML tooltip
+         *
+         * @since     2.2
+         */
+        useHTML: false
     },
     /**
      * Highchart by default puts a credits label in the lower right corner

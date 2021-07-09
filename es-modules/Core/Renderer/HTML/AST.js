@@ -84,11 +84,13 @@ var AST = /** @class */ (function () {
      * `innerHTML` in all cases where the content is not fully trusted.
      *
      * @static
-     *
      * @function Highcharts.AST#setElementHTML
      *
-     * @param {SVGDOMElement|HTMLDOMElement} el The node to set content of
-     * @param {string} html The markup string
+     * @param {SVGDOMElement|HTMLDOMElement} el
+     * Node to set content of.
+     *
+     * @param {string} html
+     * Markup string
      */
     AST.setElementHTML = function (el, html) {
         el.innerHTML = ''; // Clear previous
@@ -181,6 +183,7 @@ var AST = /** @class */ (function () {
      */
     AST.prototype.parseMarkup = function (markup) {
         var nodes = [];
+        markup = markup.trim();
         var doc;
         var body;
         if (hasValidDOMParser) {
@@ -199,8 +202,8 @@ var AST = /** @class */ (function () {
             };
             if (tagName === '#text') {
                 var textContent = node.textContent || '';
-                // Whitespace text node, don't append it to the AST
-                if (/^[\s]*$/.test(textContent)) {
+                // Leading whitespace text node, don't append it to the AST
+                if (nodes.length === 0 && /^[\s]*$/.test(textContent)) {
                     return;
                 }
                 astNode.textContent = textContent;

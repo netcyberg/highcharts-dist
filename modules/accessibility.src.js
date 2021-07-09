@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v9.1.2 (2021-06-16)
+ * @license Highcharts JS v9.1.2 (2021-07-09)
  *
  * Accessibility module
  *
@@ -1524,7 +1524,7 @@
 
         return KeyboardNavigation;
     });
-    _registerModule(_modules, 'Accessibility/Components/LegendComponent.js', [_modules['Core/Chart/Chart.js'], _modules['Core/Globals.js'], _modules['Core/Legend.js'], _modules['Core/Utilities.js'], _modules['Accessibility/AccessibilityComponent.js'], _modules['Accessibility/KeyboardNavigationHandler.js'], _modules['Accessibility/Utils/HTMLUtilities.js']], function (Chart, H, Legend, U, AccessibilityComponent, KeyboardNavigationHandler, HTMLUtilities) {
+    _registerModule(_modules, 'Accessibility/Components/LegendComponent.js', [_modules['Core/Animation/AnimationUtilities.js'], _modules['Core/Chart/Chart.js'], _modules['Core/Globals.js'], _modules['Core/Legend.js'], _modules['Core/Utilities.js'], _modules['Accessibility/AccessibilityComponent.js'], _modules['Accessibility/KeyboardNavigationHandler.js'], _modules['Accessibility/Utils/HTMLUtilities.js']], function (A, Chart, H, Legend, U, AccessibilityComponent, KeyboardNavigationHandler, HTMLUtilities) {
         /* *
          *
          *  (c) 2009-2021 Øystein Moseng
@@ -1536,11 +1536,14 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
+        var animObject = A.animObject;
         var addEvent = U.addEvent,
             extend = U.extend,
             find = U.find,
             fireEvent = U.fireEvent,
-            isNumber = U.isNumber;
+            isNumber = U.isNumber,
+            pick = U.pick,
+            syncTimeout = U.syncTimeout;
         var removeElement = HTMLUtilities.removeElement,
             stripHTMLTags = HTMLUtilities.stripHTMLTagsFromString;
         /* eslint-disable no-invalid-this, valid-jsdoc */
@@ -1630,6 +1633,13 @@
                         component.updateProxyPositionForItem(e.item);
                     }
                 });
+                this.addEvent(Legend, 'afterRender', function () {
+                    if (this.chart === component.chart &&
+                        this.chart.renderer &&
+                        component.recreateProxies()) {
+                        syncTimeout(function () { return component.updateProxiesPositions(); }, animObject(pick(this.chart.renderer.globalAnimation, true)).duration);
+                    }
+                });
             },
             /**
              * @private
@@ -1655,10 +1665,7 @@
              * of the proxy overlays.
              */
             onChartRender: function () {
-                if (shouldDoLegendA11y(this.chart)) {
-                    this.updateProxiesPositions();
-                }
-                else {
+                if (!shouldDoLegendA11y(this.chart)) {
                     this.removeProxies();
                 }
             },
@@ -1699,7 +1706,9 @@
                     this.addLegendListContainer();
                     this.proxyLegendItems();
                     this.updateLegendItemProxyVisibility();
+                    return true;
                 }
+                return false;
             },
             /**
              * @private
@@ -1762,7 +1771,7 @@
             },
             /**
              * @private
-             * @param {Highcharts.BubbleLegend|Point|Highcharts.Series} item
+             * @param {Highcharts.BubbleLegendItem|Point|Highcharts.Series} item
              */
             proxyLegendItem: function (item) {
                 if (!item.legendItem || !item.legendGroup || !this.legendListContainer) {
@@ -1951,7 +1960,9 @@
             if (exportList && chart.exportContextMenu) {
                 // Reset hover states etc.
                 exportList.forEach(function (el) {
-                    if (el.className === 'highcharts-menu-item' && el.onmouseout) {
+                    if (el &&
+                        el.className === 'highcharts-menu-item' &&
+                        el.onmouseout) {
                         el.onmouseout(getFakeMouseEvent('mouseout'));
                     }
                 });
@@ -2124,18 +2135,22 @@
                     // Set tabindex on the menu items to allow focusing by script
                     // Set role to give screen readers a chance to pick up the contents
                     exportList.forEach(function (item) {
-                        if (item.tagName === 'LI' &&
-                            !(item.children && item.children.length)) {
-                            item.setAttribute('tabindex', -1);
-                        }
-                        else {
-                            item.setAttribute('aria-hidden', 'true');
+                        if (item) {
+                            if (item.tagName === 'LI' &&
+                                !(item.children && item.children.length)) {
+                                item.setAttribute('tabindex', -1);
+                            }
+                            else {
+                                item.setAttribute('aria-hidden', 'true');
+                            }
                         }
                     });
                     // Set accessibility properties on parent div
-                    var parentDiv = exportList[0].parentNode;
-                    parentDiv.removeAttribute('aria-hidden');
-                    parentDiv.setAttribute('aria-label', chart.langFormat('accessibility.exporting.chartMenuLabel', { chart: chart }));
+                    var parentDiv = (exportList[0] && exportList[0].parentNode);
+                    if (parentDiv) {
+                        parentDiv.removeAttribute('aria-hidden');
+                        parentDiv.setAttribute('aria-label', chart.langFormat('accessibility.exporting.chartMenuLabel', { chart: chart }));
+                    }
                 }
             },
             /**
@@ -2173,7 +2188,7 @@
                     // Only run exporting navigation if exporting support exists and is
                     // enabled on chart
                     validate: function () {
-                        return chart.exportChart &&
+                        return !!chart.exporting &&
                             chart.options.exporting.enabled !== false &&
                             chart.options.exporting.accessibility.enabled !==
                                 false;
@@ -3056,7 +3071,7 @@
 
         return AnnotationsA11y;
     });
-    _registerModule(_modules, 'Accessibility/Components/SeriesComponent/SeriesDescriber.js', [_modules['Accessibility/Components/AnnotationsA11y.js'], _modules['Accessibility/Utils/ChartUtilities.js'], _modules['Core/FormatUtilities.js'], _modules['Accessibility/Utils/HTMLUtilities.js'], _modules['Core/Tooltip.js'], _modules['Core/Utilities.js']], function (AnnotationsA11y, ChartUtilities, F, HTMLUtilities, Tooltip, U) {
+    _registerModule(_modules, 'Accessibility/Components/SeriesComponent/SeriesDescriber.js', [_modules['Accessibility/Components/AnnotationsA11y.js'], _modules['Accessibility/Utils/ChartUtilities.js'], _modules['Core/FormatUtilities.js'], _modules['Accessibility/Utils/HTMLUtilities.js'], _modules['Core/Utilities.js']], function (AnnotationsA11y, ChartUtilities, F, HTMLUtilities, U) {
         /* *
          *
          *  (c) 2009-2021 Øystein Moseng
@@ -3263,20 +3278,15 @@
             var series = point.series,
                 chart = series.chart,
                 a11yOptions = chart.options.accessibility.point || {},
-                hasDateXAxis = series.xAxis && series.xAxis.dateTime;
-            if (hasDateXAxis) {
-                var tooltipDateFormat = Tooltip.prototype.getXDateFormat.call({
-                        getDateFormat: Tooltip.prototype.getDateFormat,
-                        chart: chart
-                    },
-                    point,
-                    chart.options.tooltip,
-                    series.xAxis),
+                dateXAxis = series.xAxis && series.xAxis.dateTime;
+            if (dateXAxis) {
+                var tooltipDateFormat = dateXAxis.getXDateFormat(point.x || 0,
+                    chart.options.tooltip.dateTimeLabelFormats),
                     dateFormat = a11yOptions.dateFormatter &&
                         a11yOptions.dateFormatter(point) ||
                         a11yOptions.dateFormat ||
                         tooltipDateFormat;
-                return chart.time.dateFormat(dateFormat, point.x, void 0);
+                return chart.time.dateFormat(dateFormat, point.x || 0, void 0);
             }
         }
         /**
@@ -5588,7 +5598,7 @@
                     }
                 }
                 // Create the text label
-                var text = lang[isMin ? 'rangeSelectorFrom' : 'rangeSelectorTo'];
+                var text = lang[isMin ? 'rangeSelectorFrom' : 'rangeSelectorTo'] || '';
                 var label = renderer
                         .label(text, 0)
                         .addClass('highcharts-range-label')
@@ -7420,6 +7430,12 @@
                         },
                         insertIntoDOM: function (el, chart) {
                             chart.renderTo.insertBefore(el, chart.container.nextSibling);
+                        },
+                        afterInserted: function () {
+                            if (component.chart.accessibility) {
+                                component.chart.accessibility
+                                    .keyboardNavigation.updateExitAnchor(); // #15986
+                            }
                         }
                     }
                 };
@@ -9860,7 +9876,7 @@
         };
 
     });
-    _registerModule(_modules, 'Accessibility/FocusBorder.js', [_modules['Core/Chart/Chart.js'], _modules['Core/Globals.js'], _modules['Core/Renderer/SVG/SVGElement.js'], _modules['Core/Renderer/SVG/SVGLabel.js'], _modules['Core/Utilities.js']], function (Chart, H, SVGElement, SVGLabel, U) {
+    _registerModule(_modules, 'Accessibility/FocusBorder.js', [_modules['Core/Chart/Chart.js'], _modules['Core/Renderer/SVG/SVGElement.js'], _modules['Core/Renderer/SVG/SVGLabel.js'], _modules['Core/Utilities.js']], function (Chart, SVGElement, SVGLabel, U) {
         /* *
          *
          *  (c) 2009-2021 Øystein Moseng
@@ -10001,8 +10017,7 @@
                     var posXCorrection = 0,
                         posYCorrection = 0;
                     if (text.attr('text-anchor') === 'middle') {
-                        posXCorrection = H.isFirefox && text.rotation ? 0.25 : 0.5;
-                        posYCorrection = H.isFirefox && !text.rotation ? 0.75 : 0.5;
+                        posXCorrection = posYCorrection = 0.5;
                     }
                     else if (!text.rotation) {
                         posYCorrection = 0.75;

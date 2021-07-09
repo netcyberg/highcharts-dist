@@ -160,6 +160,12 @@ extend(InfoRegionsComponent.prototype, /** @lends Highcharts.InfoRegionsComponen
                 },
                 insertIntoDOM: function (el, chart) {
                     chart.renderTo.insertBefore(el, chart.container.nextSibling);
+                },
+                afterInserted: function () {
+                    if (component.chart.accessibility) {
+                        component.chart.accessibility
+                            .keyboardNavigation.updateExitAnchor(); // #15986
+                    }
                 }
             }
         };

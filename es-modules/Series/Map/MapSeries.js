@@ -696,7 +696,9 @@ var MapSeries = /** @class */ (function (_super) {
         dataLabels: {
             crop: false,
             formatter: function () {
-                return this.point.value;
+                var numberFormatter = this.series.chart.numberFormatter;
+                var value = this.point.value;
+                return isNumber(value) ? numberFormatter(value, -1) : '';
             },
             inside: true,
             overflow: false,

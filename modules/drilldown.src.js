@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v9.1.2 (2021-06-16)
+ * @license Highcharts JS v9.1.2 (2021-07-09)
  *
  * Highcharts Drilldown module
  *
@@ -620,7 +620,7 @@
             if (drilldownLevels && drilldownLevels.length > 0) { // #3352, async loading
                 lastLevel = drilldownLevels[drilldownLevels.length - 1];
                 lastLevel.series = lastLevel.seriesOptions;
-                return format(this.options.lang.drillUpText, lastLevel);
+                return format(this.options.lang.drillUpText || '', lastLevel);
             }
         };
         Chart.prototype.showDrillUpButton = function () {

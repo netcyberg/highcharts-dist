@@ -1,5 +1,5 @@
 /**
- * @license Highcharts Gantt JS v9.1.2 (2021-06-16)
+ * @license Highcharts Gantt JS v9.1.2 (2021-07-09)
  *
  * Gantt series
  *
@@ -7272,7 +7272,6 @@
                     pointFormatter: function () {
                         var point = this,
                             series = point.series,
-                            tooltip = series.chart.tooltip,
                             xAxis = series.xAxis,
                             formats = series.tooltipOptions.dateTimeLabelFormats,
                             startOfWeek = xAxis.options.startOfWeek,
@@ -7285,8 +7284,8 @@
                         if (ttOptions.pointFormat) {
                             return point.tooltipFormatter(ttOptions.pointFormat);
                         }
-                        if (!format) {
-                            format = splat(tooltip.getDateFormat(xAxis.closestPointRange, point.start, startOfWeek, formats))[0];
+                        if (!format && isNumber(point.start)) {
+                            format = series.chart.time.getDateFormat(xAxis.closestPointRange, point.start, startOfWeek, formats || {});
                         }
                         start = series.chart.time.dateFormat(format, point.start);
                         end = series.chart.time.dateFormat(format, point.end);
@@ -7701,8 +7700,15 @@
                  * Scrollbar class to use.
                  */
                 ScrollbarAxis.compose = function (AxisClass, ScrollbarClass) {
-                    var getExtremes = function (axis) {
-                        var axisMin = pick(axis.options && axis.options.min, axis.min);
+                    if (ScrollbarAxis.composed.indexOf(AxisClass) === -1) {
+                        ScrollbarAxis.composed.push(AxisClass);
+                }
+                else {
+                    return AxisClass;
+                }
+                var getExtremes = function (axis) {
+                        var axisMin = pick(axis.options && axis.options.min,
+                    axis.min);
                     var axisMax = pick(axis.options && axis.options.max,
                         axis.max);
                     return {
@@ -7841,6 +7847,7 @@
                 });
                 return AxisClass;
             };
+            ScrollbarAxis.composed = [];
             return ScrollbarAxis;
         }());
 
@@ -9931,7 +9938,7 @@
                     }
                 }
                 // Create the text label
-                var text = lang[isMin ? 'rangeSelectorFrom' : 'rangeSelectorTo'];
+                var text = lang[isMin ? 'rangeSelectorFrom' : 'rangeSelectorTo'] || '';
                 var label = renderer
                         .label(text, 0)
                         .addClass('highcharts-range-label')
@@ -13217,6 +13224,9 @@
                         stickToMin = min <= xDataMin;
                     }
                 }
+                else {
+                    stickToMin = false; // #15864
+                }
                 return stickToMin;
             };
             /**
@@ -13433,10 +13443,15 @@
 
         return H.Navigator;
     });
-    _registerModule(_modules, 'masters/modules/gantt.src.js', [_modules['Core/Globals.js'], _modules['Core/Chart/GanttChart.js']], function (Highcharts, GanttChart) {
+    _registerModule(_modules, 'masters/modules/gantt.src.js', [_modules['Core/Globals.js'], _modules['Core/Chart/GanttChart.js'], _modules['Core/Scrollbar.js']], function (Highcharts, GanttChart, Scrollbar) {
 
-        Highcharts.GanttChart = GanttChart;
-        Highcharts.ganttChart = GanttChart.ganttChart;
+        var G = Highcharts;
+        // Classes
+        G.Scrollbar = Scrollbar;
+        G.GanttChart = GanttChart;
+        G.ganttChart = GanttChart.ganttChart;
+        // Compositions
+        Scrollbar.compose(G.Axis);
 
     });
 }));

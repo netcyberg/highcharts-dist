@@ -240,12 +240,12 @@ bindingsUtils.manageIndicators = function (data) {
  * @return {void}
  */
 bindingsUtils.updateHeight = function (e, annotation) {
-    var coordsY = this.utils.getAssignedAxis(this.chart.pointer.getCoordinates(e).yAxis);
-    if (coordsY) {
+    var options = annotation.options.typeOptions, yAxis = isNumber(options.yAxis) && this.chart.yAxis[options.yAxis];
+    if (yAxis && options.points) {
         annotation.update({
             typeOptions: {
-                height: coordsY.value -
-                    annotation.options.typeOptions.points[1].y
+                height: yAxis.toValue(e[yAxis.horiz ? 'chartX' : 'chartY']) -
+                    (options.points[1].y || 0)
             }
         });
     }
@@ -334,12 +334,12 @@ bindingsUtils.isPriceIndicatorEnabled = function (series) {
  */
 bindingsUtils.updateNthPoint = function (startIndex) {
     return function (e, annotation) {
-        var options = annotation.options.typeOptions, coords = this.chart.pointer.getCoordinates(e), coordsX = this.utils.getAssignedAxis(coords.xAxis), coordsY = this.utils.getAssignedAxis(coords.yAxis);
-        if (coordsX && coordsY) {
+        var options = annotation.options.typeOptions, xAxis = isNumber(options.xAxis) && this.chart.xAxis[options.xAxis], yAxis = isNumber(options.yAxis) && this.chart.yAxis[options.yAxis];
+        if (xAxis && yAxis) {
             options.points.forEach(function (point, index) {
                 if (index >= startIndex) {
-                    point.x = coordsX.value;
-                    point.y = coordsY.value;
+                    point.x = xAxis.toValue(e[xAxis.horiz ? 'chartX' : 'chartY']);
+                    point.y = yAxis.toValue(e[yAxis.horiz ? 'chartX' : 'chartY']);
                 }
             });
             annotation.update({

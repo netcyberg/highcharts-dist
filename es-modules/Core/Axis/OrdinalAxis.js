@@ -16,6 +16,21 @@ import U from '../Utilities.js';
 var addEvent = U.addEvent, correctFloat = U.correctFloat, css = U.css, defined = U.defined, error = U.error, pick = U.pick, timeUnits = U.timeUnits;
 // Has a dependency on Navigator due to the use of Axis.toFixedRange
 import '../Navigator.js';
+/* eslint-disable valid-jsdoc */
+/**
+ * @private
+ * Internal function to calculate the precise index
+ * in ordinalPositions array.
+ */
+function getIndexInArray(ordinalPositions, val) {
+    var index = OrdinalAxis.Composition.findIndexOf(ordinalPositions, val, true);
+    if (ordinalPositions[index] === val) {
+        return index;
+    }
+    var percent = (val - ordinalPositions[index]) /
+        (ordinalPositions[index + 1] - ordinalPositions[index]);
+    return index + percent;
+}
 /**
  * Extends the axis with ordinal support.
  * @private
@@ -180,28 +195,28 @@ var OrdinalAxis;
          *        The key to being found.
          * @param {boolean} indirectSearch
          *        In case of lack of the point in the array, should return
-         *        value be equal to -1 or the closest bigger index.
+         *        value be equal to -1 or the closest smaller index.
          *  @private
          */
         Composition.findIndexOf = function (sortedArray, key, indirectSearch) {
             var start = 0, end = sortedArray.length - 1, middle;
-            while (start <= end) {
-                middle = Math.floor((start + end) / 2);
+            while (start < end) {
+                middle = Math.ceil((start + end) / 2);
                 // Key found as the middle element.
-                if (sortedArray[middle] === key) {
-                    return middle;
-                }
-                if (sortedArray[middle] < key) {
+                if (sortedArray[middle] <= key) {
                     // Continue searching to the right.
-                    start = middle + 1;
+                    start = middle;
                 }
                 else {
                     // Continue searching to the left.
                     end = middle - 1;
                 }
             }
+            if (sortedArray[start] === key) {
+                return start;
+            }
             // Key could not be found.
-            return !indirectSearch ? -1 : middle;
+            return !indirectSearch ? -1 : start;
         };
         /**
          * Get the ordinal positions for the entire data set. This is necessary
@@ -245,6 +260,7 @@ var OrdinalAxis;
                         getGroupIntervalFactor: this.getGroupIntervalFactor
                     },
                     ordinal2lin: axisProto.ordinal2lin,
+                    getIndexOfPoint: axisProto.getIndexOfPoint,
                     val2lin: axisProto.val2lin // #2590
                 };
                 fakeAxis.ordinal.axis = fakeAxis;
@@ -261,6 +277,9 @@ var OrdinalAxis;
                     fakeSeries.xData = fakeSeries.xData.concat(ordinal.getOverscrollPositions());
                     fakeSeries.options = {
                         dataGrouping: grouping ? {
+                            firstAnchor: 'firstPoint',
+                            anchor: 'middle',
+                            lastAnchor: 'lastPoint',
                             enabled: true,
                             forced: true,
                             // doesn't matter which, use the fastest
@@ -376,7 +395,6 @@ var OrdinalAxis;
             var ordinal = this, axis = ordinal.axis, extraRange = axis.options.overscroll, distance = ordinal.overscrollPointsRange, positions = [], max = axis.dataMax;
             if (defined(distance)) {
                 // Max + pointRange because we need to scroll to the last
-                positions.push(max);
                 while (max <= axis.dataMax + extraRange) {
                     max += distance;
                     positions.push(max);
@@ -668,7 +686,7 @@ var OrdinalAxis;
                     return positions[Math.floor(index)] + mantissa * distance;
                 }
                 // For cases when the index is not in the extended ordinal
-                // position array (EOP), like when the value we are looking
+                // position array, like when the value we are looking
                 // for exceed the available data,
                 // approximate that value based on the calculated slope.
                 var positionsLength = positions.length, firstPositionsValue = positions[0], lastPositionsValue = positions[positionsLength - 1], slope = (lastPositionsValue - firstPositionsValue) / (positionsLength - 1);
@@ -683,7 +701,7 @@ var OrdinalAxis;
          * Translate from a linear axis value to the corresponding ordinal axis
          * position. If there are no gaps in the ordinal axis this will be the
          * same. The translated value is the value that the point would have if
-         * the axis were linear, using the same min and max.
+         * the axis was linear, using the same min and max.
          *
          * @private
          * @function Highcharts.Axis#val2lin
@@ -697,39 +715,69 @@ var OrdinalAxis;
          * @return {number}
          */
         axisProto.val2lin = function (val, toIndex) {
-            var axis = this, ordinal = axis.ordinal, ordinalPositions = ordinal.positions, ret;
+            var axis = this, ordinal = axis.ordinal, slope = ordinal.slope, ordinalPositions = ordinal.positions, extendedOrdinalPositions = ordinal.extendedOrdinalPositions;
             if (!ordinalPositions) {
-                ret = val;
+                return val;
+            }
+            var ordinalLength = ordinalPositions.length, ordinalIndex;
+            // If the searched value is inside visible plotArea, ivastigate the
+            // value basing on ordinalPositions.
+            if (ordinalPositions[0] <= val &&
+                ordinalPositions[ordinalLength - 1] >= val) {
+                ordinalIndex = getIndexInArray(ordinalPositions, val);
+                // final return value is based on ordinalIndex
             }
             else {
-                var ordinalLength = ordinalPositions.length, i = void 0, distance = void 0, ordinalIndex = void 0;
-                // first look for an exact match in the ordinalpositions array
-                i = ordinalLength;
-                while (i--) {
-                    if (ordinalPositions[i] === val) {
-                        ordinalIndex = i;
-                        break;
+                if (!extendedOrdinalPositions) {
+                    extendedOrdinalPositions =
+                        ordinal.getExtendedPositions &&
+                            ordinal.getExtendedPositions();
+                    ordinal.extendedOrdinalPositions = extendedOrdinalPositions;
+                }
+                if (!(extendedOrdinalPositions && extendedOrdinalPositions.length)) {
+                    return val;
+                }
+                var length_2 = extendedOrdinalPositions.length;
+                if (!slope) {
+                    slope =
+                        (extendedOrdinalPositions[length_2 - 1] -
+                            extendedOrdinalPositions[0]) /
+                            length_2;
+                }
+                // OriginalPointReference is equal to the index of
+                // first point of ordinalPositions in extendedOrdinalPositions.
+                var originalPositionsReference = getIndexInArray(extendedOrdinalPositions, ordinalPositions[0]);
+                // If the searched value is outside the visiblePlotArea,
+                // check if it is inside extendedOrdinalPositions.
+                if (val >= extendedOrdinalPositions[0] &&
+                    val <=
+                        extendedOrdinalPositions[length_2 - 1]) {
+                    // Return Value
+                    ordinalIndex = getIndexInArray(extendedOrdinalPositions, val) - originalPositionsReference;
+                }
+                else {
+                    // Since ordinal.slope is the average distance between 2
+                    // points on visible plotArea, this can be used to calculete
+                    // the approximate position of the point, which is outside
+                    // the extededOrdinalPositions.
+                    if (val < extendedOrdinalPositions[0]) {
+                        var diff = extendedOrdinalPositions[0] - val, approximateIndexOffset = diff / slope;
+                        ordinalIndex =
+                            -originalPositionsReference -
+                                approximateIndexOffset;
+                    }
+                    else {
+                        var diff = val -
+                            extendedOrdinalPositions[length_2 - 1], approximateIndexOffset = diff / slope;
+                        ordinalIndex =
+                            approximateIndexOffset +
+                                length_2 -
+                                originalPositionsReference;
                     }
                 }
-                // if that failed, find the intermediate position between the
-                // two nearest values
-                i = ordinalLength - 1;
-                while (i--) {
-                    if (val > ordinalPositions[i] || i === 0) { // interpolate
-                        // something between 0 and 1
-                        distance = (val - ordinalPositions[i]) /
-                            (ordinalPositions[i + 1] - ordinalPositions[i]);
-                        ordinalIndex = i + distance;
-                        break;
-                    }
-                }
-                ret = toIndex ?
-                    ordinalIndex :
-                    ordinal.slope *
-                        (ordinalIndex || 0) +
-                        ordinal.offset;
             }
-            return ret;
+            return toIndex ? ordinalIndex : slope * (ordinalIndex || 0) +
+                ordinal.offset;
         };
         // Record this to prevent overwriting by broken-axis module (#5979)
         axisProto.ordinal2lin = axisProto.val2lin;
